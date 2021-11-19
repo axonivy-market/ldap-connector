@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axonivy.connector.ldap</groupId>
   <name>ldap-connector</name>
-  <artifactId>excel-connector-modules</artifactId>
+  <artifactId>ldap-connector-modules</artifactId>
   <version>9.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
