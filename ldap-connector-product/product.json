@@ -5,7 +5,7 @@
 			"data": {
 				"projects": [
 					{
-						"groupId": "com.axonivy.market",
+						"groupId": "com.axonivy.connector.ldap",
 						"artifactId": "${project.name}-demo",
 						"version": "${version}",
 						"type": "iar"
@@ -27,7 +27,7 @@
 			"data": {
 				"dependencies": [
 					{
-						"groupId": "com.axonivy.connector.excel",
+						"groupId": "com.axonivy.connector.ldap",
 						"artifactId": "${project.name}",
 						"version": "${version}",
 						"type": "iar"
