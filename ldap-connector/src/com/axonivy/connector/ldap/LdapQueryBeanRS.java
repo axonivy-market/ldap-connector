@@ -93,13 +93,12 @@ public class LdapQueryBeanRS extends AbstractUserProcessExtension {
   private boolean descendingSort;
 
   public LdapQueryBeanRS() throws Exception {
-    jndiConfig = new JndiConfig(JndiProvider.NOVELL_E_DIRECTORY, "ldap://",
-            JndiConfig.AUTH_KIND_SIMPLE, "", "", false, false, "");
+    jndiConfig = JndiConfig.create().toJndiConfig();
   }
 
 
   public LdapQueryBeanRS(JndiConfig config) {
-    this.jndiConfig = config;
+    this.jndiConfig = JndiConfig.create(config).toJndiConfig();
   }
 
 

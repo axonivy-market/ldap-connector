@@ -21,8 +21,7 @@ import ch.ivyteam.naming.JndiProvider;
  *          added getServerName and getServerPort
  * @version ReW 8.4.2002 created
  */
-public class JndiConfig
-{
+public class JndiConfig {
   public static final String AUTH_KIND_NONE = "none";
   public static final String AUTH_KIND_SIMPLE = "simple";
 
@@ -37,13 +36,8 @@ public class JndiConfig
   private boolean useSsl;
   private boolean useLdapConnectionPool;
 
-  public JndiConfig(JndiProvider provider, String url, String authenticationKind, String userName, String password, boolean useSsl, boolean useLdapConnectionPool, String defaultContext)
-  {
-    // constructor private
-    // statisiche methode: create(): Builder
-    // ........
-    // toJndiConfig(): JndiConfig
-
+  private JndiConfig(JndiProvider provider, String url, String authenticationKind, String userName,
+          String password, boolean useSsl, boolean useLdapConnectionPool, String defaultContext) {
     this.provider = provider;
     this.url = url;
     this.authenticationKind = authenticationKind;
@@ -54,91 +48,80 @@ public class JndiConfig
     this.defaultContext = defaultContext;
   }
 
-  public void setProvider(JndiProvider provider)
-  {
+  public void setProvider(JndiProvider provider) {
     this.provider = provider;
   }
 
-  public JndiProvider getProvider()
-  {
+  public JndiProvider getProvider() {
     return provider;
   }
 
-  public void setUrl(String url)
-  {
+  public void setUrl(String url) {
     this.url = url;
   }
 
-  public String getUrl()
-  {
+  public String getUrl() {
     return url;
   }
 
-  public void setAuthenticationKind(String authenticationKind)
-  {
+  public void setAuthenticationKind(String authenticationKind) {
     this.authenticationKind = authenticationKind;
   }
 
-  public String getAuthenticationKind()
-  {
+  public String getAuthenticationKind() {
     return authenticationKind;
   }
 
-  public void setUserName(String userName)
-  {
+  public void setUserName(String userName) {
     this.userName = userName;
   }
 
-  public String getUserName()
-  {
+  public String getUserName() {
     return userName;
   }
 
-  public void setPassword(String password)
-  {
+  public void setPassword(String password) {
     this.password = password;
   }
 
-  public String getPassword()
-  {
+  public String getPassword() {
     return password;
   }
 
-  public void setDefaultContext(String defaultContext)
-  {
+  public void setDefaultContext(String defaultContext) {
     this.defaultContext = defaultContext;
   }
 
   /**
-   * <p>Gets the default jndi context name.</p>
    * <p>
-   * Do not use this method since it is unsave to use with LDAP. See issue #25327 for details.
-   * Never ever use strings in JNDI when using it with LDAP always use LdapName. In JNDI Strings are escaped according to JNDI and not LDAP which leads to conflict.
-   * Instead of {@link NameClassPair#getName()} use {@link NameClassPair#getNameInNamespace()} which returns a correct LdapName
-   * Instead of {@link SearchResult#getName()} use {@link SearchResult#getNameInNamespace()} which returns a correct LdapName
+   * Gets the default jndi context name.
+   * </p>
+   * <p>
+   * Do not use this method since it is unsave to use with LDAP. See issue
+   * #25327 for details. Never ever use strings in JNDI when using it with LDAP
+   * always use LdapName. In JNDI Strings are escaped according to JNDI and not
+   * LDAP which leads to conflict. Instead of {@link NameClassPair#getName()}
+   * use {@link NameClassPair#getNameInNamespace()} which returns a correct
+   * LdapName Instead of {@link SearchResult#getName()} use
+   * {@link SearchResult#getNameInNamespace()} which returns a correct LdapName
    * @return default jndi context name
    */
-  public String getDefaultContext()
-  {
+  public String getDefaultContext() {
     return defaultContext;
   }
 
-  public LdapName getDefaultContextName() throws InvalidNameException
-  {
-    if (StringUtils.isBlank(defaultContext))
-    {
+  public LdapName getDefaultContextName() throws InvalidNameException {
+    if (StringUtils.isBlank(defaultContext)) {
       return new LdapName("");
     }
     return new LdapName(defaultContext);
   }
 
-  public void setUseSsl(boolean useSsl)
-  {
+  public void setUseSsl(boolean useSsl) {
     this.useSsl = useSsl;
   }
 
-  public boolean isUseSsl()
-  {
+  public boolean isUseSsl() {
     return useSsl;
   }
 
@@ -146,44 +129,34 @@ public class JndiConfig
    * Gets the jndi environement property hashtable
    * @return jdni environement
    */
-  public Hashtable<?,?> getEnvironement()
-  {
+  public Hashtable<?, ?> getEnvironement() {
     return createEnvironment();
   }
 
-  Hashtable<?,?> createEnvironment()
-  {
+  Hashtable<?, ?> createEnvironment() {
     Hashtable<String, Object> env = new Hashtable<String, Object>();
     env.put(Context.INITIAL_CONTEXT_FACTORY, provider.getProviderClass());
     env.put(Context.PROVIDER_URL, url);
-    if (authenticationKind.equals(AUTH_KIND_NONE))
-    {
+    if (authenticationKind.equals(AUTH_KIND_NONE)) {
       env.put(Context.SECURITY_AUTHENTICATION, AUTH_KIND_NONE);
-    }
-    else if (authenticationKind.equals(AUTH_KIND_SIMPLE))
-    {
+    } else if (authenticationKind.equals(AUTH_KIND_SIMPLE)) {
       env.put(Context.SECURITY_AUTHENTICATION, AUTH_KIND_SIMPLE);
       env.put(Context.SECURITY_PRINCIPAL, userName);
       env.put(Context.SECURITY_CREDENTIALS, password);
-    }
-    else
-    {
+    } else {
       env.put(Context.SECURITY_AUTHENTICATION, AUTH_KIND_NONE);
     }
 
-    if (useSsl)
-    {
+    if (useSsl) {
       env.put(Context.SECURITY_PROTOCOL, "ssl");
     }
-    if (useLdapConnectionPool)
-    {
+    if (useLdapConnectionPool) {
       env.put(LDAP_CONNECTION_POOL, "true");
     }
 
     env.put(Context.REFERRAL, "follow");
 
-    if (JndiProvider.ACTIVE_DIRECTORY.equals(this.provider))
-    {
+    if (JndiProvider.ACTIVE_DIRECTORY.equals(this.provider)) {
       // fix for active directory bug.
       // See more details in class ch.ivyteam.naming.ldap.ldapURLContextFactory
       env.put(Context.URL_PKG_PREFIXES, "ch.ivyteam.naming");
@@ -191,34 +164,29 @@ public class JndiConfig
     return env;
   }
 
-
   @Override
-  public boolean equals(Object obj)
-  {
-   JndiConfig jndiConfig;
-   if (obj instanceof JndiConfig)
-   {
-     jndiConfig = (JndiConfig)obj;
+  public boolean equals(Object obj) {
+    JndiConfig jndiConfig;
+    if (obj instanceof JndiConfig) {
+      jndiConfig = (JndiConfig) obj;
 
-     if (this==jndiConfig)
-     {
-       return true;
-     }
+      if (this == jndiConfig) {
+        return true;
+      }
 
-     return ((url.equals(jndiConfig.url))&&
-     				 (provider.equals(jndiConfig.provider))&&
-     				 (authenticationKind.equals(jndiConfig.authenticationKind))&&
-     				 (defaultContext.equals(jndiConfig.defaultContext))&&
-     				 (userName.equals(jndiConfig.userName))&&
-     				 (password.equals(jndiConfig.password))&&
-     				 (useSsl==jndiConfig.useSsl));
-   }
+      return ((url.equals(jndiConfig.url)) &&
+              (provider.equals(jndiConfig.provider)) &&
+              (authenticationKind.equals(jndiConfig.authenticationKind)) &&
+              (defaultContext.equals(jndiConfig.defaultContext)) &&
+              (userName.equals(jndiConfig.userName)) &&
+              (password.equals(jndiConfig.password)) &&
+              (useSsl == jndiConfig.useSsl));
+    }
     return false;
   }
 
   @Override
-  public String toString()
-  {
+  public String toString() {
     return "JndiConfig[url=" + url + ", "
             + "provider=" + provider + ", "
             + "authenticationKind=" + authenticationKind + ","
@@ -227,18 +195,91 @@ public class JndiConfig
   }
 
   @Override
-  public int hashCode()
-  {
+  public int hashCode() {
     return getUrl().hashCode();
   }
 
-  public boolean isUseLdapConnectionPool()
-  {
+  public boolean isUseLdapConnectionPool() {
     return useLdapConnectionPool;
   }
 
-  public void setUseLdapConnectionPool(boolean _useLdapConnectionPool)
-  {
+  public void setUseLdapConnectionPool(boolean _useLdapConnectionPool) {
     this.useLdapConnectionPool = _useLdapConnectionPool;
   }
+
+  public static Builder create() {
+    return new Builder();
+  }
+
+  public static Builder create(JndiConfig config) {
+    return new Builder()
+            .authenticationKind(config.authenticationKind)
+            .defaultContext(config.defaultContext)
+            .password(config.password)
+            .provider(config.provider)
+            .url(config.url)
+            .useLdapConnectionPool(config.useLdapConnectionPool)
+            .userName(config.userName)
+            .useSsl(config.useSsl);
+  }
+
+  public static final class Builder {
+    private JndiProvider provider = new JndiProvider(null, null);
+    private String url = "";
+    private String authenticationKind = "none";
+    private String userName = "";
+    private String password = "";
+    private String defaultContext = "";
+    private boolean useSsl = false;
+    private boolean useLdapConnectionPool = false;
+
+    public Builder provider(@SuppressWarnings("hiding") JndiProvider provider) {
+      if (provider != null) {
+        this.provider = provider;
+      }
+      return this;
+    }
+
+    public Builder url(@SuppressWarnings("hiding") String url) {
+      this.url = StringUtils.defaultString(url);
+      return this;
+    }
+
+    public Builder authenticationKind(@SuppressWarnings("hiding") String authenticationKind) {
+      this.authenticationKind = StringUtils.defaultString(authenticationKind);
+      return this;
+    }
+
+    public Builder userName(@SuppressWarnings("hiding") String userName) {
+      this.userName = StringUtils.defaultString(userName);
+      return this;
+    }
+
+    public Builder password(@SuppressWarnings("hiding") String password) {
+      this.password = StringUtils.defaultString(password);
+      return this;
+    }
+
+    public Builder defaultContext(@SuppressWarnings("hiding") String defaultContext) {
+      this.defaultContext = StringUtils.defaultString(defaultContext);
+      return this;
+    }
+
+    public Builder useSsl(@SuppressWarnings("hiding") boolean useSsl) {
+      this.useSsl = useSsl;
+      return this;
+    }
+
+    public Builder useLdapConnectionPool(@SuppressWarnings("hiding") boolean useLdapConnectionPool) {
+      this.useLdapConnectionPool = useLdapConnectionPool;
+      return this;
+    }
+
+    public JndiConfig toJndiConfig() {
+      return new JndiConfig(provider, url, authenticationKind, userName, password, useSsl,
+              useLdapConnectionPool, defaultContext);
+    }
+
+  }
+
 }
