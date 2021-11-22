@@ -15,11 +15,8 @@
  */
 package com.axonivy.connector.ldap;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.Vector;
 
 import javax.naming.NamingEnumeration;
@@ -33,7 +30,6 @@ import javax.naming.directory.SearchResult;
 import com.axonivy.connector.ldap.util.JndiConfig;
 import com.axonivy.connector.ldap.util.JndiUtil;
 
-import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.persistence.PersistencyException;
 import ch.ivyteam.ivy.process.engine.IRequestId;
 import ch.ivyteam.ivy.process.extension.impl.AbstractUserProcessExtension;
@@ -42,7 +38,6 @@ import ch.ivyteam.ivy.scripting.language.IIvyScriptContext;
 import ch.ivyteam.ivy.scripting.objects.CompositeObject;
 import ch.ivyteam.ivy.scripting.objects.List;
 import ch.ivyteam.ivy.scripting.objects.Recordset;
-import ch.ivyteam.naming.JndiProvider;
 
 /**
  * PI-Element to query LDAP-Servers A variant from LdapQueryBean that returns
@@ -96,34 +91,21 @@ public class LdapQueryBeanRS extends AbstractUserProcessExtension {
     jndiConfig = JndiConfig.create().toJndiConfig();
   }
 
-
   public LdapQueryBeanRS(JndiConfig config) {
     this.jndiConfig = JndiConfig.create(config).toJndiConfig();
   }
 
-
-  public void setConfi() throws NamingException {
-    String url = Ivy.var().get("url");
-//    System.out.println(url);
-    jndiConfig.setUrl("ldap://test-ad.ivyteam.io:389");
-    jndiConfig.setUserName("cn=admin,cn=Users,dc=zugtstdomain,dc=wan");
-    jndiConfig.setPassword("nimda");
-
+  public NamingEnumeration<SearchResult> perform(String rootObject, String filter, int searchScope, String[] returningAttributes)
+          throws NamingException {
     DirContext dirContext = JndiUtil.openDirContext(jndiConfig);
     searchControl = new SearchControls();
-    String filter = "(displayName=*)";
-    dirContext.search("CN=Users,DC=zugtstdomain,DC=wan", filter, searchControl);
-    NamingEnumeration<SearchResult> resultEnum = dirContext.search("CN=Users,DC=zugtstdomain,DC=wan", filter, searchControl);
+    searchControl.setSearchScope(searchScope);
+    searchControl.setReturningAttributes(returningAttributes);
+    dirContext.search(rootObject, filter, searchControl);
+    NamingEnumeration<SearchResult> resultEnum = dirContext.search("CN=Users,DC=zugtstdomain,DC=wan", filter,
+            searchControl);
 
-    while(resultEnum.hasMoreElements()) {
-      SearchResult r = resultEnum.nextElement();
-      System.out.println(r);
-    }
-
-
-
-    //resultEnum = dirContext.search(objectName, filter, searchControl);
-
+    return resultEnum;
   }
 
   /**
@@ -132,163 +114,147 @@ public class LdapQueryBeanRS extends AbstractUserProcessExtension {
    *
    * @param configuration string
    */
-  @Override
-  public void setConfiguration(String configuration) {
-    ByteArrayInputStream bais = null;
-    Properties props = new Properties();
-    String attribute, value;
-    int pos;
-
-    if (configuration == null) {
-      return;
-    }
-
-    try {
-      bais = new ByteArrayInputStream(configuration.getBytes());
-      props.load(bais);
-
-      if (props.get("server_provider") != null) {
-        for (pos = 0; pos < JndiProvider.PROVIDERS.length; pos++) {
-          if (JndiProvider.PROVIDERS[pos].getProviderName().equals(
-                  props.get("server_provider"))) {
-            jndiConfig.setProvider(JndiProvider.PROVIDERS[pos]);
-            break;
-          }
-        }
-      }
-      jndiConfig.setUrl(props.getProperty("server_url", jndiConfig
-              .getUrl()));
-      jndiConfig.setAuthenticationKind(props.getProperty(
-              "server_authkind", jndiConfig.getAuthenticationKind()));
-      jndiConfig.setUserName(props.getProperty("server_username", ""));
-      jndiConfig.setPassword(props.getProperty("server_password", ""));
-      jndiConfig.setUseSsl(Boolean.parseBoolean(props.getProperty("server_useSsl",
-              Boolean.FALSE.toString())));
-      jndiConfig.setDefaultContext(props
-              .getProperty("server_context", ""));
-
-      rootObjectName = props.getProperty("search_root_object", "");
-      if (rootObjectName.startsWith("in.")) {
-        rootObjectName = rootObjectName.substring(3);
-      }
-
-      if ("subTree".equals(props.getProperty("search_scope", ""))) {
-        searchControl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-      } else if ("oneLevel".equals(props.getProperty("search_scope", ""))) {
-        searchControl.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-      } else {
-        searchControl.setSearchScope(SearchControls.OBJECT_SCOPE);
-      }
-
-      pos = 0;
-      do {
-        attribute = props.getProperty("search_filter_attribute_" + pos,
-                null);
-        value = props.getProperty("search_filter_value_" + pos, null);
-        if ((attribute != null) && (value != null)
-                && (!attribute.equals(""))) {
-          if (value.startsWith("in.")) {
-            value = value.substring(3);
-          }
-          filterAttributesHashtable.put(attribute, value);
-        }
-        pos++;
-      } while ((attribute != null) && (value != null));
-
-      if ("all".equals(props.getProperty("result_return"))) {
-        ivyGridAttribute = props.getProperty(
-                "result_ivyGrid_attribute", "");
-        if (ivyGridAttribute.startsWith("in.")) {
-          ivyGridAttribute = ivyGridAttribute.substring(3);
-        }
-        pos = 0;
-        do {
-          attribute = props.getProperty("result_attribute_attribute_"
-                  + pos, null);
-          if ((attribute != null) && (!attribute.equals(""))) {
-            resultAttributesHashtable.put(attribute, "");
-            resultAttributesKeys.add(attribute);
-          }
-          pos++;
-        } while (attribute != null);
-      } else {
-        pos = 0;
-        do {
-          attribute = props.getProperty("result_table_attribute_"
-                  + pos, null);
-          value = props
-                  .getProperty("result_table_value_" + pos, null);
-          if ((attribute != null) && (value != null)
-                  && (!attribute.equals(""))) {
-            resultAttributesHashtable.put(attribute, value);
-            resultAttributesKeys.add(attribute);
-          }
-          pos++;
-        } while ((attribute != null) && (value != null));
-      }
-      if (ivyGridAttribute == null) {
-        includeName = Boolean.parseBoolean(props.getProperty(
-                "result_include_name", Boolean.FALSE.toString()));
-      } else {
-        includeName = Boolean.parseBoolean(props.getProperty(
-                "result_include_name2", Boolean.FALSE.toString()));
-      }
-
-      if ("filterText".equals(props.getProperty("search_filter_format"))) {
-        anyFilterText = props.getProperty("search_filter_text");
-      }
-
-      ivyGridNameAttribute = props.getProperty(
-              "result_ivyGrid_name_attribute", "");
-      if (ivyGridNameAttribute.startsWith("in.")) {
-        ivyGridNameAttribute = ivyGridNameAttribute.substring(3);
-      }
-
-      sortByAttribute = props.getProperty("result_sort_attribute", "");
-
-      if ("descending".equals(props.getProperty("result_sort_order"))) {
-        descendingSort = true;
-      } else {
-        descendingSort = false;
-      }
-
-      searchControl
-              .setReturningAttributes(resultAttributesHashtable
-                      .keySet().toArray(new String[0]));
-
-      // 31.10.2006 bb: set returningObjFlag to false. If it is true, the
-      // dircontext.close() method
-      // does not close and the dircontext remains in memory until the GC
-      // finally sweeps it out.
-      // The number of nativ system threads will grow and grow what can
-      // result in an out of memory exception!
-      searchControl.setReturningObjFlag(false);
-    } catch (IOException ex) {
-    } finally {
-      if (bais != null) {
-        try {
-          bais.close();
-        } catch (IOException ex) {
-        }
-      }
-    }
-  }
-
-  /**
-   * Called if the simulation starts
-   *
-   * @exception Exception Exception
-   */
-  @Override
-  public void start() throws Exception {}
-
-  /**
-   * Called if the simulation stopps
-   *
-   * @exception Exception Exception
-   */
-  @Override
-  public void stop() throws Exception {}
+//  @Override
+//  public void setConfiguration(String configuration) {
+//    ByteArrayInputStream bais = null;
+//    Properties props = new Properties();
+//    String attribute, value;
+//    int pos;
+//
+//    if (configuration == null) {
+//      return;
+//    }
+//
+//    try {
+//      bais = new ByteArrayInputStream(configuration.getBytes());
+//      props.load(bais);
+//
+//      if (props.get("server_provider") != null) {
+//        for (pos = 0; pos < JndiProvider.PROVIDERS.length; pos++) {
+//          if (JndiProvider.PROVIDERS[pos].getProviderName().equals(
+//                  props.get("server_provider"))) {
+//            jndiConfig.setProvider(JndiProvider.PROVIDERS[pos]);
+//            break;
+//          }
+//        }
+//      }
+//      jndiConfig.setUrl(props.getProperty("server_url", jndiConfig
+//              .getUrl()));
+//      jndiConfig.setAuthenticationKind(props.getProperty(
+//              "server_authkind", jndiConfig.getAuthenticationKind()));
+//      jndiConfig.setUserName(props.getProperty("server_username", ""));
+//      jndiConfig.setPassword(props.getProperty("server_password", ""));
+//      jndiConfig.setUseSsl(Boolean.parseBoolean(props.getProperty("server_useSsl",
+//              Boolean.FALSE.toString())));
+//      jndiConfig.setDefaultContext(props
+//              .getProperty("server_context", ""));
+//
+//      rootObjectName = props.getProperty("search_root_object", "");
+//      if (rootObjectName.startsWith("in.")) {
+//        rootObjectName = rootObjectName.substring(3);
+//      }
+//
+//      if ("subTree".equals(props.getProperty("search_scope", ""))) {
+//        searchControl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+//      } else if ("oneLevel".equals(props.getProperty("search_scope", ""))) {
+//        searchControl.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+//      } else {
+//        searchControl.setSearchScope(SearchControls.OBJECT_SCOPE);
+//      }
+//
+//      pos = 0;
+//      do {
+//        attribute = props.getProperty("search_filter_attribute_" + pos,
+//                null);
+//        value = props.getProperty("search_filter_value_" + pos, null);
+//        if ((attribute != null) && (value != null)
+//                && (!attribute.equals(""))) {
+//          if (value.startsWith("in.")) {
+//            value = value.substring(3);
+//          }
+//          filterAttributesHashtable.put(attribute, value);
+//        }
+//        pos++;
+//      } while ((attribute != null) && (value != null));
+//
+//      if ("all".equals(props.getProperty("result_return"))) {
+//        ivyGridAttribute = props.getProperty(
+//                "result_ivyGrid_attribute", "");
+//        if (ivyGridAttribute.startsWith("in.")) {
+//          ivyGridAttribute = ivyGridAttribute.substring(3);
+//        }
+//        pos = 0;
+//        do {
+//          attribute = props.getProperty("result_attribute_attribute_"
+//                  + pos, null);
+//          if ((attribute != null) && (!attribute.equals(""))) {
+//            resultAttributesHashtable.put(attribute, "");
+//            resultAttributesKeys.add(attribute);
+//          }
+//          pos++;
+//        } while (attribute != null);
+//      } else {
+//        pos = 0;
+//        do {
+//          attribute = props.getProperty("result_table_attribute_"
+//                  + pos, null);
+//          value = props
+//                  .getProperty("result_table_value_" + pos, null);
+//          if ((attribute != null) && (value != null)
+//                  && (!attribute.equals(""))) {
+//            resultAttributesHashtable.put(attribute, value);
+//            resultAttributesKeys.add(attribute);
+//          }
+//          pos++;
+//        } while ((attribute != null) && (value != null));
+//      }
+//      if (ivyGridAttribute == null) {
+//        includeName = Boolean.parseBoolean(props.getProperty(
+//                "result_include_name", Boolean.FALSE.toString()));
+//      } else {
+//        includeName = Boolean.parseBoolean(props.getProperty(
+//                "result_include_name2", Boolean.FALSE.toString()));
+//      }
+//
+//      if ("filterText".equals(props.getProperty("search_filter_format"))) {
+//        anyFilterText = props.getProperty("search_filter_text");
+//      }
+//
+//      ivyGridNameAttribute = props.getProperty(
+//              "result_ivyGrid_name_attribute", "");
+//      if (ivyGridNameAttribute.startsWith("in.")) {
+//        ivyGridNameAttribute = ivyGridNameAttribute.substring(3);
+//      }
+//
+//      sortByAttribute = props.getProperty("result_sort_attribute", "");
+//
+//      if ("descending".equals(props.getProperty("result_sort_order"))) {
+//        descendingSort = true;
+//      } else {
+//        descendingSort = false;
+//      }
+//
+//      searchControl
+//              .setReturningAttributes(resultAttributesHashtable
+//                      .keySet().toArray(new String[0]));
+//
+//      // 31.10.2006 bb: set returningObjFlag to false. If it is true, the
+//      // dircontext.close() method
+//      // does not close and the dircontext remains in memory until the GC
+//      // finally sweeps it out.
+//      // The number of nativ system threads will grow and grow what can
+//      // result in an out of memory exception!
+//      searchControl.setReturningObjFlag(false);
+//    } catch (IOException ex) {
+//    } finally {
+//      if (bais != null) {
+//        try {
+//          bais.close();
+//        } catch (IOException ex) {
+//        }
+//      }
+//    }
+//  }
 
   @Override
   public CompositeObject perform(IRequestId reqID, CompositeObject argument,
@@ -415,31 +381,21 @@ public class LdapQueryBeanRS extends AbstractUserProcessExtension {
   }
 
   private JndiConfig createJndiConfig(IIvyScriptContext cont) {
-/*    JndiConfig expandedJndiConfig = (JndiConfig) jndiConfig.clone();
-    // try to expand url, name and password fields
-    String propStr = expandedJndiConfig.getUrl();
-    if (propStr != null) {
-      if (getVariable(propStr, cont) != null) {
-        propStr = (String) getVariable(propStr, cont);
-        expandedJndiConfig.setUrl(propStr);
-      }
-    }
-    propStr = expandedJndiConfig.getUserName();
-    if (propStr != null) {
-      if (getVariable(propStr, cont) != null) {
-        propStr = (String) getVariable(propStr, cont);
-        expandedJndiConfig.setUserName(propStr);
-      }
-    }
-    propStr = expandedJndiConfig.getPassword();
-    if (propStr != null) {
-      if (getVariable(propStr, cont) != null) {
-        propStr = (String) getVariable(propStr, cont);
-        expandedJndiConfig.setPassword(propStr);
-      }
-    }*/
+    /*
+     * JndiConfig expandedJndiConfig = (JndiConfig) jndiConfig.clone(); // try
+     * to expand url, name and password fields String propStr =
+     * expandedJndiConfig.getUrl(); if (propStr != null) { if
+     * (getVariable(propStr, cont) != null) { propStr = (String)
+     * getVariable(propStr, cont); expandedJndiConfig.setUrl(propStr); } }
+     * propStr = expandedJndiConfig.getUserName(); if (propStr != null) { if
+     * (getVariable(propStr, cont) != null) { propStr = (String)
+     * getVariable(propStr, cont); expandedJndiConfig.setUserName(propStr); } }
+     * propStr = expandedJndiConfig.getPassword(); if (propStr != null) { if
+     * (getVariable(propStr, cont) != null) { propStr = (String)
+     * getVariable(propStr, cont); expandedJndiConfig.setPassword(propStr); } }
+     */
     return jndiConfig;
-    //return expandedJndiConfig;
+    // return expandedJndiConfig;
   }
 
   private void setNoResult(CompositeObject argument) throws NoSuchFieldException {
