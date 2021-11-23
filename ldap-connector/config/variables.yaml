@@ -6,4 +6,7 @@
 # '<project>/Config/_<environment>/variables.yaml
 #
 Variables:
-#  myVariable: value
+  LdapConnector:
+    Username: ""
+    Password: ""
+    Url: "ldap://test-ad.ivyteam.io:389"
