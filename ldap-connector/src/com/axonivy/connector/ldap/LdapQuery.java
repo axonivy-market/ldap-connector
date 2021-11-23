@@ -21,6 +21,7 @@ import ch.ivyteam.ivy.scripting.exceptions.IvyScriptException;
 import ch.ivyteam.ivy.scripting.language.IIvyScriptContext;
 import ch.ivyteam.ivy.scripting.objects.CompositeObject;
 import ch.ivyteam.ivy.scripting.objects.List;
+import ch.ivyteam.ivy.scripting.objects.Record;
 import ch.ivyteam.ivy.scripting.objects.Recordset;
 
 public class LdapQuery {
@@ -42,14 +43,15 @@ public class LdapQuery {
     this.jndiConfig = JndiConfig.create(config).toJndiConfig();
   }
 
-  public NamingEnumeration<SearchResult> perform(String rootObject, String filter, int searchScope,
+  public Recordset perform(String rootObject, String filter, int searchScope,
           String[] returningAttributes)
           throws NamingException {
     DirContext dirContext = JndiUtil.openDirContext(jndiConfig);
     SearchControls searchControls = defineSearchControl(searchScope, returningAttributes);
     NamingEnumeration<SearchResult> resultEnum = dirContext.search(rootObject, filter, searchControls);
     dirContext.close();
-    return resultEnum;
+    Recordset recordset = searchResultsToRecordset(resultEnum, returningAttributes);
+    return recordset;
   }
 
   private static SearchControls defineSearchControl(int searchScope, String[] returningAttributes) {
@@ -62,10 +64,25 @@ public class LdapQuery {
     return searchControl;
   }
 
+  private static Recordset searchResultsToRecordset(NamingEnumeration<SearchResult> searchResults,
+          String[] returningAttributes) throws NamingException {
+    Recordset recordset = new Recordset(returningAttributes);
+    while (searchResults.hasMore()) {
+      Record record = new Record();
+      SearchResult searchResult = searchResults.nextElement();
+      Attributes attributes = searchResult.getAttributes();
+      for (String attributeId : returningAttributes) {
+        record.putField(attributeId, attributes.get(attributeId).get());
+      }
+      recordset.add(record);
+    }
+    return recordset;
+  }
+
   public CompositeObject perform(IRequestId reqID, CompositeObject argument,
           IIvyScriptContext cont) throws Exception {
-    final String filter = "";//buildSearchFilter(cont);
-    final String objectName = "";//getRootObjectName(cont);
+    final String filter = "";// buildSearchFilter(cont);
+    final String objectName = "";// getRootObjectName(cont);
     final JndiConfig expandedJndiConfig = createJndiConfig(cont);
 
     DirContext dirContext = null;
@@ -149,9 +166,7 @@ public class LdapQuery {
 
   private Vector<String> readColumnNames() {
     Vector<String> colNames = new Vector<>();
-    if (includeName) {
-      colNames.add("JNDIName");
-    }
+
     Enumeration<String> attrEnum = resultAttributesKeys.elements();
     while (attrEnum.hasMoreElements()) {
       String attribute = attrEnum.nextElement();
