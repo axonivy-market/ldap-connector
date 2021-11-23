@@ -11,10 +11,9 @@ import javax.naming.directory.SearchResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.axonivy.connector.ldap.LdapQueryBeanRS;
+import com.axonivy.connector.ldap.LdapQuery;
 import com.axonivy.connector.ldap.util.JndiConfig;
 
 import ch.ivyteam.ivy.environment.Ivy;
@@ -24,14 +23,15 @@ import ch.ivyteam.naming.JndiProvider;
 @IvyTest
 class TestLdap {
 
-  private JndiConfig config;
-  private LdapQueryBeanRS ldapQuery;
+  private static JndiConfig config;
+  private static LdapQuery ldapQuery;
+  private static String password;
+  private static String username;
+
   private String[] returningAttributes;
-  private String password;
-  private String username;
 
   @BeforeAll
-  void getCredentials() throws IOException {
+  static void setup() throws IOException {
     username = Ivy.var().get("LdapConnector.Username");
     password = Ivy.var().get("LdapConnector.Password");
 
@@ -43,10 +43,6 @@ class TestLdap {
         password = (String) props.get("password");
       }
     }
-  }
-
-  @BeforeEach
-  void setup() {
     config = JndiConfig.create()
             .authenticationKind(JndiConfig.AUTH_KIND_SIMPLE)
             .defaultContext("")
@@ -56,29 +52,25 @@ class TestLdap {
             .useLdapConnectionPool(false)
             .userName(username)
             .useSsl(false).toJndiConfig();
-    ldapQuery = new LdapQueryBeanRS(config);
+    ldapQuery = new LdapQuery(config);
   }
 
   @Test
-  void admin_query() throws Exception {
-    NamingEnumeration<SearchResult> resultEnum = ldapQuery.perform("DC=zugtstdomain,DC=wan", "(name=admin)",
+  void person_query() throws Exception {
+    NamingEnumeration<SearchResult> resultEnum = ldapQuery.perform("CN=Users,DC=zugtstdomain,DC=wan",
+            "(objectClass=person)",
             SearchControls.ONELEVEL_SCOPE,
             returningAttributes);
     assertThat(resultEnum.hasMoreElements()).isTrue();
   }
 
   @Test
-  void query2() throws Exception {
+  void group_query() throws Exception {
     NamingEnumeration<SearchResult> resultEnum = ldapQuery.perform("DC=zugtstdomain,DC=wan",
-            "(objectClass=*)",
+            "(objectClass=group)",
             SearchControls.SUBTREE_SCOPE,
             returningAttributes);
-
-    while (resultEnum.hasMoreElements()) {
-      SearchResult r = resultEnum.next();
-      System.out.println(r);
-      System.out.println(r.getAttributes().get("name"));
-    }
+    assertThat(resultEnum.hasMoreElements()).isTrue();
   }
 
 }

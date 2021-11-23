@@ -4,23 +4,12 @@ import java.util.Hashtable;
 
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
-import javax.naming.NameClassPair;
-import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
 import org.apache.commons.lang3.StringUtils;
 
 import ch.ivyteam.naming.JndiProvider;
 
-/**
- * Stores configuration information about a JNDI environement
- *
- * @author Reto Weiss
- * @version pk 03.08.2004: added fields serverPort and serverName
- * @version pk 02.08.2004: added isPasswordDynamic field with getter and setter.
- *          added getServerName and getServerPort
- * @version ReW 8.4.2002 created
- */
 public class JndiConfig {
   public static final String AUTH_KIND_NONE = "none";
   public static final String AUTH_KIND_SIMPLE = "simple";
@@ -92,20 +81,6 @@ public class JndiConfig {
     this.defaultContext = defaultContext;
   }
 
-  /**
-   * <p>
-   * Gets the default jndi context name.
-   * </p>
-   * <p>
-   * Do not use this method since it is unsave to use with LDAP. See issue
-   * #25327 for details. Never ever use strings in JNDI when using it with LDAP
-   * always use LdapName. In JNDI Strings are escaped according to JNDI and not
-   * LDAP which leads to conflict. Instead of {@link NameClassPair#getName()}
-   * use {@link NameClassPair#getNameInNamespace()} which returns a correct
-   * LdapName Instead of {@link SearchResult#getName()} use
-   * {@link SearchResult#getNameInNamespace()} which returns a correct LdapName
-   * @return default jndi context name
-   */
   public String getDefaultContext() {
     return defaultContext;
   }
@@ -125,10 +100,6 @@ public class JndiConfig {
     return useSsl;
   }
 
-  /**
-   * Gets the jndi environement property hashtable
-   * @return jdni environement
-   */
   public Hashtable<?, ?> getEnvironement() {
     return createEnvironment();
   }
@@ -157,8 +128,6 @@ public class JndiConfig {
     env.put(Context.REFERRAL, "follow");
 
     if (JndiProvider.ACTIVE_DIRECTORY.equals(this.provider)) {
-      // fix for active directory bug.
-      // See more details in class ch.ivyteam.naming.ldap.ldapURLContextFactory
       env.put(Context.URL_PKG_PREFIXES, "ch.ivyteam.naming");
     }
     return env;
@@ -223,6 +192,7 @@ public class JndiConfig {
             .useSsl(config.useSsl);
   }
 
+  @SuppressWarnings("hiding")
   public static final class Builder {
     private JndiProvider provider = new JndiProvider(null, null);
     private String url = "";
@@ -233,44 +203,44 @@ public class JndiConfig {
     private boolean useSsl = false;
     private boolean useLdapConnectionPool = false;
 
-    public Builder provider(@SuppressWarnings("hiding") JndiProvider provider) {
+    public Builder provider(JndiProvider provider) {
       if (provider != null) {
         this.provider = provider;
       }
       return this;
     }
 
-    public Builder url(@SuppressWarnings("hiding") String url) {
+    public Builder url(String url) {
       this.url = StringUtils.defaultString(url);
       return this;
     }
 
-    public Builder authenticationKind(@SuppressWarnings("hiding") String authenticationKind) {
+    public Builder authenticationKind(String authenticationKind) {
       this.authenticationKind = StringUtils.defaultString(authenticationKind);
       return this;
     }
 
-    public Builder userName(@SuppressWarnings("hiding") String userName) {
+    public Builder userName(String userName) {
       this.userName = StringUtils.defaultString(userName);
       return this;
     }
 
-    public Builder password(@SuppressWarnings("hiding") String password) {
+    public Builder password(String password) {
       this.password = StringUtils.defaultString(password);
       return this;
     }
 
-    public Builder defaultContext(@SuppressWarnings("hiding") String defaultContext) {
+    public Builder defaultContext(String defaultContext) {
       this.defaultContext = StringUtils.defaultString(defaultContext);
       return this;
     }
 
-    public Builder useSsl(@SuppressWarnings("hiding") boolean useSsl) {
+    public Builder useSsl(boolean useSsl) {
       this.useSsl = useSsl;
       return this;
     }
 
-    public Builder useLdapConnectionPool(@SuppressWarnings("hiding") boolean useLdapConnectionPool) {
+    public Builder useLdapConnectionPool(boolean useLdapConnectionPool) {
       this.useLdapConnectionPool = useLdapConnectionPool;
       return this;
     }
