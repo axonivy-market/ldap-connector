@@ -5,9 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.util.Properties;
 
-import javax.naming.NamingEnumeration;
 import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,6 +16,7 @@ import com.axonivy.connector.ldap.util.JndiConfig;
 
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.environment.IvyTest;
+import ch.ivyteam.ivy.scripting.objects.Recordset;
 import ch.ivyteam.naming.JndiProvider;
 
 @IvyTest
@@ -28,7 +27,7 @@ class TestLdap {
   private static String password;
   private static String username;
 
-  private String[] returningAttributes;
+  private String[] returningAttributes = {"name"};
 
   @BeforeAll
   static void setup() throws IOException {
@@ -57,20 +56,29 @@ class TestLdap {
 
   @Test
   void person_query() throws Exception {
-    NamingEnumeration<SearchResult> resultEnum = ldapQuery.perform("CN=Users,DC=zugtstdomain,DC=wan",
+    Recordset queryResult = ldapQuery.perform("CN=Users,DC=zugtstdomain,DC=wan",
             "(objectClass=person)",
             SearchControls.ONELEVEL_SCOPE,
             returningAttributes);
-    assertThat(resultEnum.hasMoreElements()).isTrue();
+    assertThat(queryResult.size()).isEqualTo(2);
   }
 
   @Test
   void group_query() throws Exception {
-    NamingEnumeration<SearchResult> resultEnum = ldapQuery.perform("DC=zugtstdomain,DC=wan",
+    Recordset queryResult = ldapQuery.perform("DC=zugtstdomain,DC=wan",
             "(objectClass=group)",
             SearchControls.SUBTREE_SCOPE,
             returningAttributes);
-    assertThat(resultEnum.hasMoreElements()).isTrue();
+    assertThat(queryResult.size()).isGreaterThan(0);
+  }
+
+  @Test
+  void empty_result() throws Exception {
+    Recordset queryResult = ldapQuery.perform("DC=zugtstdomain,DC=wan",
+            "(objectClass=group1xy)",
+            SearchControls.SUBTREE_SCOPE,
+            returningAttributes);
+    assertThat(queryResult.size()).isEqualTo(0);
   }
 
 }
