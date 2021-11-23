@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2016 Axon Ivy AG
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.axonivy.connector.ldap;
 
 import java.util.Enumeration;
@@ -32,235 +17,55 @@ import com.axonivy.connector.ldap.util.JndiUtil;
 
 import ch.ivyteam.ivy.persistence.PersistencyException;
 import ch.ivyteam.ivy.process.engine.IRequestId;
-import ch.ivyteam.ivy.process.extension.impl.AbstractUserProcessExtension;
 import ch.ivyteam.ivy.scripting.exceptions.IvyScriptException;
 import ch.ivyteam.ivy.scripting.language.IIvyScriptContext;
 import ch.ivyteam.ivy.scripting.objects.CompositeObject;
 import ch.ivyteam.ivy.scripting.objects.List;
 import ch.ivyteam.ivy.scripting.objects.Recordset;
 
-/**
- * PI-Element to query LDAP-Servers A variant from LdapQueryBean that returns
- * the values as Recordset
- *
- * @author Bruno Buetler
- * @version MarcWillaredt August2009 Updated to Ivy 4.1
- * @version bb 16.11.2005 improved (allow "in.x" as ivy attribute names) and
- *          extended (anyFilter)
- * @version bb 2.11.2005 created.
- */
-public class LdapQueryBeanRS extends AbstractUserProcessExtension {
+public class LdapQuery {
 
-  /** Jndi server configuration */
   private JndiConfig jndiConfig;
-
-  /** Maps the resulting jndi attribute names to ivyGrid attribute names */
   private Hashtable<String, String> resultAttributesHashtable = new Hashtable<>();
-
-  /** To have an ordered list of the attribut names */
   private Vector<String> resultAttributesKeys = new Vector<>();
-
-  /** Filter attribute names */
-  private Hashtable<String, String> filterAttributesHashtable = new Hashtable<>();
-
-  /** Jndi search control */
-  private SearchControls searchControl = new SearchControls();
-
-  /** ivyGrid Attribute to store results in */
   private String ivyGridAttribute = null;
-
-  /** The root object to begin search for */
-  private String rootObjectName;
-
-  /** include jndi name to result */
   private boolean includeName;
-
-  /** any filter as text */
-  private String anyFilterText = null;
-
-  /** ivyGrid attribute to store the jndi name in */
   private String ivyGridNameAttribute;
-
-  /** attribute name to sort the result */
   private String sortByAttribute;
-
-  /** sort the result descending (and not ascending) */
   private boolean descendingSort;
 
-  public LdapQueryBeanRS() throws Exception {
+  public LdapQuery() throws Exception {
     jndiConfig = JndiConfig.create().toJndiConfig();
   }
 
-  public LdapQueryBeanRS(JndiConfig config) {
+  public LdapQuery(JndiConfig config) {
     this.jndiConfig = JndiConfig.create(config).toJndiConfig();
   }
 
-  public NamingEnumeration<SearchResult> perform(String rootObject, String filter, int searchScope, String[] returningAttributes)
+  public NamingEnumeration<SearchResult> perform(String rootObject, String filter, int searchScope,
+          String[] returningAttributes)
           throws NamingException {
     DirContext dirContext = JndiUtil.openDirContext(jndiConfig);
-    searchControl = new SearchControls();
-    searchControl.setSearchScope(searchScope);
-    searchControl.setReturningAttributes(returningAttributes);
-    dirContext.search(rootObject, filter, searchControl);
-    NamingEnumeration<SearchResult> resultEnum = dirContext.search("CN=Users,DC=zugtstdomain,DC=wan", filter,
-            searchControl);
-
+    SearchControls searchControls = defineSearchControl(searchScope, returningAttributes);
+    NamingEnumeration<SearchResult> resultEnum = dirContext.search(rootObject, filter, searchControls);
+    dirContext.close();
     return resultEnum;
   }
 
-  /**
-   * Sets a configuration string. This configuration string is produced by the
-   * configuration editor of the element.
-   *
-   * @param configuration string
-   */
-//  @Override
-//  public void setConfiguration(String configuration) {
-//    ByteArrayInputStream bais = null;
-//    Properties props = new Properties();
-//    String attribute, value;
-//    int pos;
-//
-//    if (configuration == null) {
-//      return;
-//    }
-//
-//    try {
-//      bais = new ByteArrayInputStream(configuration.getBytes());
-//      props.load(bais);
-//
-//      if (props.get("server_provider") != null) {
-//        for (pos = 0; pos < JndiProvider.PROVIDERS.length; pos++) {
-//          if (JndiProvider.PROVIDERS[pos].getProviderName().equals(
-//                  props.get("server_provider"))) {
-//            jndiConfig.setProvider(JndiProvider.PROVIDERS[pos]);
-//            break;
-//          }
-//        }
-//      }
-//      jndiConfig.setUrl(props.getProperty("server_url", jndiConfig
-//              .getUrl()));
-//      jndiConfig.setAuthenticationKind(props.getProperty(
-//              "server_authkind", jndiConfig.getAuthenticationKind()));
-//      jndiConfig.setUserName(props.getProperty("server_username", ""));
-//      jndiConfig.setPassword(props.getProperty("server_password", ""));
-//      jndiConfig.setUseSsl(Boolean.parseBoolean(props.getProperty("server_useSsl",
-//              Boolean.FALSE.toString())));
-//      jndiConfig.setDefaultContext(props
-//              .getProperty("server_context", ""));
-//
-//      rootObjectName = props.getProperty("search_root_object", "");
-//      if (rootObjectName.startsWith("in.")) {
-//        rootObjectName = rootObjectName.substring(3);
-//      }
-//
-//      if ("subTree".equals(props.getProperty("search_scope", ""))) {
-//        searchControl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-//      } else if ("oneLevel".equals(props.getProperty("search_scope", ""))) {
-//        searchControl.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-//      } else {
-//        searchControl.setSearchScope(SearchControls.OBJECT_SCOPE);
-//      }
-//
-//      pos = 0;
-//      do {
-//        attribute = props.getProperty("search_filter_attribute_" + pos,
-//                null);
-//        value = props.getProperty("search_filter_value_" + pos, null);
-//        if ((attribute != null) && (value != null)
-//                && (!attribute.equals(""))) {
-//          if (value.startsWith("in.")) {
-//            value = value.substring(3);
-//          }
-//          filterAttributesHashtable.put(attribute, value);
-//        }
-//        pos++;
-//      } while ((attribute != null) && (value != null));
-//
-//      if ("all".equals(props.getProperty("result_return"))) {
-//        ivyGridAttribute = props.getProperty(
-//                "result_ivyGrid_attribute", "");
-//        if (ivyGridAttribute.startsWith("in.")) {
-//          ivyGridAttribute = ivyGridAttribute.substring(3);
-//        }
-//        pos = 0;
-//        do {
-//          attribute = props.getProperty("result_attribute_attribute_"
-//                  + pos, null);
-//          if ((attribute != null) && (!attribute.equals(""))) {
-//            resultAttributesHashtable.put(attribute, "");
-//            resultAttributesKeys.add(attribute);
-//          }
-//          pos++;
-//        } while (attribute != null);
-//      } else {
-//        pos = 0;
-//        do {
-//          attribute = props.getProperty("result_table_attribute_"
-//                  + pos, null);
-//          value = props
-//                  .getProperty("result_table_value_" + pos, null);
-//          if ((attribute != null) && (value != null)
-//                  && (!attribute.equals(""))) {
-//            resultAttributesHashtable.put(attribute, value);
-//            resultAttributesKeys.add(attribute);
-//          }
-//          pos++;
-//        } while ((attribute != null) && (value != null));
-//      }
-//      if (ivyGridAttribute == null) {
-//        includeName = Boolean.parseBoolean(props.getProperty(
-//                "result_include_name", Boolean.FALSE.toString()));
-//      } else {
-//        includeName = Boolean.parseBoolean(props.getProperty(
-//                "result_include_name2", Boolean.FALSE.toString()));
-//      }
-//
-//      if ("filterText".equals(props.getProperty("search_filter_format"))) {
-//        anyFilterText = props.getProperty("search_filter_text");
-//      }
-//
-//      ivyGridNameAttribute = props.getProperty(
-//              "result_ivyGrid_name_attribute", "");
-//      if (ivyGridNameAttribute.startsWith("in.")) {
-//        ivyGridNameAttribute = ivyGridNameAttribute.substring(3);
-//      }
-//
-//      sortByAttribute = props.getProperty("result_sort_attribute", "");
-//
-//      if ("descending".equals(props.getProperty("result_sort_order"))) {
-//        descendingSort = true;
-//      } else {
-//        descendingSort = false;
-//      }
-//
-//      searchControl
-//              .setReturningAttributes(resultAttributesHashtable
-//                      .keySet().toArray(new String[0]));
-//
-//      // 31.10.2006 bb: set returningObjFlag to false. If it is true, the
-//      // dircontext.close() method
-//      // does not close and the dircontext remains in memory until the GC
-//      // finally sweeps it out.
-//      // The number of nativ system threads will grow and grow what can
-//      // result in an out of memory exception!
-//      searchControl.setReturningObjFlag(false);
-//    } catch (IOException ex) {
-//    } finally {
-//      if (bais != null) {
-//        try {
-//          bais.close();
-//        } catch (IOException ex) {
-//        }
-//      }
-//    }
-//  }
+  private static SearchControls defineSearchControl(int searchScope, String[] returningAttributes) {
+    SearchControls searchControl = new SearchControls();
+    searchControl.setSearchScope(searchScope);
+    searchControl.setReturningAttributes(returningAttributes);
+    // TODO check effect?
+    searchControl.setReturningObjFlag(false);
 
-  @Override
+    return searchControl;
+  }
+
   public CompositeObject perform(IRequestId reqID, CompositeObject argument,
           IIvyScriptContext cont) throws Exception {
-    final String filter = buildSearchFilter(cont);
-    final String objectName = getRootObjectName(cont);
+    final String filter = "";//buildSearchFilter(cont);
+    final String objectName = "";//getRootObjectName(cont);
     final JndiConfig expandedJndiConfig = createJndiConfig(cont);
 
     DirContext dirContext = null;
@@ -271,7 +76,7 @@ public class LdapQueryBeanRS extends AbstractUserProcessExtension {
       // InitialDirContext(expandedJndiConfig.getEnvironement()); // this only
       // works in Xivy version < 4.3.15
       dirContext = JndiUtil.openDirContext(expandedJndiConfig);
-      resultEnum = dirContext.search(objectName, filter, searchControl);
+      resultEnum = dirContext.search(objectName, filter, null);
 
       Vector<Vector<Object>> result = null;
       if (ivyGridAttribute != null) {
@@ -308,76 +113,6 @@ public class LdapQueryBeanRS extends AbstractUserProcessExtension {
     }
 
     return argument;
-  }
-
-  private String buildSearchFilter(IIvyScriptContext cont) {
-    if (anyFilterText != null) {
-      // expand ivy attributtes "in.x.." in the filter string
-      StringBuffer sb = new StringBuffer();
-      int at = anyFilterText.indexOf("in.");
-      int to = 0;
-      while (at >= 0) {
-        sb.append(anyFilterText.substring(to, at));
-        to = anyFilterText.indexOf(")", at);
-        String attr = anyFilterText.substring(at + 3, to);
-        if (getVariable(attr, cont) != null) {
-          // ivyGrid argument found. Get it an make string out of it
-          sb.append(getVariable(attr, cont).toString());
-        }
-        at = anyFilterText.indexOf("in.", to);
-      }
-      sb.append(anyFilterText.substring(to));
-      return sb.toString();
-    } else {
-      String filter = "";
-      Enumeration<String> attrEnum = filterAttributesHashtable.keys();
-      while (attrEnum.hasMoreElements()) {
-        String oldAttribute = attrEnum.nextElement();
-        String newAttribute = (String) getVariable(oldAttribute, cont);
-        String value = filterAttributesHashtable.get(oldAttribute);
-        value = (String) getVariable(value, cont);
-        value = value.trim();
-        // if the filter value starts and ends with " I assume that this is a
-        // constant string
-        if (value.startsWith("\"") && value.endsWith("\"")) {
-          value = value.substring(1, value.length() - 1);
-        } else {
-          // if the filter value does not start and ends with " I
-          // assume that this is the name of a
-          // ivyGrid argument -> try to resBunolve the value as ivyGrid argument
-          if (getVariable(value, cont) != null) {
-            // ivyGrid argument found. Get it an make string out of
-            // it
-            value = getVariable(value, cont).toString();
-          }
-          // no ivyGrid argument found with the value as name --> use
-          // the value string itself
-        }
-        if (filter.length() == 0) {
-          filter += "(&";
-        }
-        filter += "(";
-        filter += newAttribute + "=" + value;
-        filter += ")";
-      }
-
-      if (filter.length() > 0) {
-        filter += ")";
-      }
-      return filter;
-    }
-  }
-
-  private String getRootObjectName(IIvyScriptContext cont) {
-    if (rootObjectName.trim().startsWith("\"") && (rootObjectName.trim().endsWith("\""))) {
-      return rootObjectName.substring(1, rootObjectName.length() - 1);
-    } else {
-      String objectName = (String) getVariable(rootObjectName, cont);
-      if (objectName == null) {
-        objectName = rootObjectName;
-      }
-      return objectName;
-    }
   }
 
   private JndiConfig createJndiConfig(IIvyScriptContext cont) {
@@ -610,32 +345,12 @@ public class LdapQueryBeanRS extends AbstractUserProcessExtension {
     }
   }
 
-  @Override
-  public void abort(IRequestId arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public String getAdditionalLogInfo(IRequestId arg0) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void release() throws Exception {
-    // TODO Auto-generated method stub
-
-  }
-
   public Object getVariable(String name, IIvyScriptContext cont) {
     try {
       if (name.contains("in."))
-        return this.executeIvyScript(cont, name);
+        return null; // this.executeIvyScript(cont, name);
       else
-        return this.executeIvyScript(cont, "in." + name);
-    } catch (IvyScriptException e) {
-      return name;
+        return null; // this.executeIvyScript(cont, "in." + name);
     } catch (PersistencyException e) {
       return name;
     }
@@ -660,6 +375,6 @@ public class LdapQueryBeanRS extends AbstractUserProcessExtension {
       if (c != "\"".toCharArray()[0])
         tmpStr += c;
     }
-    this.executeIvyScript(cont, "ivy.log.info(\"" + tmpStr + "\")");
+    // this.executeIvyScript(cont, "ivy.log.info(\"" + tmpStr + "\")");
   }
 }
