@@ -40,10 +40,12 @@ class TestLdap {
 
     if (StringUtils.isEmpty(username)) {
       try (var in = TestLdap.class.getResourceAsStream("credentials.properties")) {
-        Properties props = new Properties();
-        props.load(in);
-        username = (String) props.get("username");
-        password = (String) props.get("password");
+        if (in != null) {
+          Properties props = new Properties();
+          props.load(in);
+          username = (String) props.get("username");
+          password = (String) props.get("password");
+        }
       }
     }
     config = JndiConfig.create()
