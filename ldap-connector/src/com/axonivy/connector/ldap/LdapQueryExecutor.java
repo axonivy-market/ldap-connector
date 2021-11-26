@@ -12,15 +12,15 @@ import javax.naming.directory.SearchResult;
 import com.axonivy.connector.ldap.util.JndiConfig;
 import com.axonivy.connector.ldap.util.JndiUtil;
 
-public class LdapQueryExecuter {
+public class LdapQueryExecutor {
 
   private JndiConfig jndiConfig;
 
-  public LdapQueryExecuter() throws Exception {
+  public LdapQueryExecutor() throws Exception {
     jndiConfig = JndiConfig.create().toJndiConfig();
   }
 
-  public LdapQueryExecuter(JndiConfig config) {
+  public LdapQueryExecutor(JndiConfig config) {
     this.jndiConfig = JndiConfig.create(config).toJndiConfig();
   }
 

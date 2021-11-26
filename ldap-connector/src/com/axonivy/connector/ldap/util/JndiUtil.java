@@ -10,6 +10,7 @@ import javax.naming.directory.InitialDirContext;
 public class JndiUtil {
 
   private static final String LDAP_CONNECTION_POOL = "com.sun.jndi.ldap.connect.pool";
+  private static final String LDAP_CONNECTION_TIMEOUT = "com.sun.jndi.ldap.connect.timeout";
 
   public static DirContext openDirContext(JndiConfig jndiConfig) throws NamingException {
     return new InitialDirContext(createEnvironment(jndiConfig));
@@ -34,7 +35,7 @@ public class JndiUtil {
       env.put(LDAP_CONNECTION_POOL, "true");
     }
     env.put(Context.REFERRAL, "follow");
-    env.put("com.sun.jndi.ldap.connect.timeout", "1000");
+    env.put(LDAP_CONNECTION_TIMEOUT, jndiConfig.getConnectionTimeout());
     return env;
   }
 }
