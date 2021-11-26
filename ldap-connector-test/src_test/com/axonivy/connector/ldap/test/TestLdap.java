@@ -22,7 +22,6 @@ import com.axonivy.connector.ldap.util.JndiConfig;
 
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.environment.IvyTest;
-import ch.ivyteam.naming.JndiProvider;
 
 @IvyTest
 class TestLdap {
@@ -50,14 +49,13 @@ class TestLdap {
       }
     }
     config = JndiConfig.create()
-            .authenticationKind(JndiConfig.AUTH_KIND_SIMPLE)
             .password(password)
-            .provider(JndiProvider.NOVELL_E_DIRECTORY)
             .url(Ivy.var().get("LdapConnector.Url"))
-            .useLdapConnectionPool(false)
             .userName(username)
-            .connectionTimeout("1000")
-            .useSsl(false).toJndiConfig();
+            .connectionTimeout(Ivy.var().get("LdapConnector.Connection.Timeout"))
+            .provider(Ivy.var().get("LdapConnector.Provider"))
+            .referral(Ivy.var().get("LdapConnector.Referral"))
+            .toJndiConfig();
     queryExecutor = new LdapQueryExecutor(config);
   }
 

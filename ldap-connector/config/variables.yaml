@@ -9,4 +9,7 @@ Variables:
   LdapConnector:
     Username: ""
     Password: ""
+    Provider: ""
+    Referral: ""
     Url: ""
+    Connection.Timeout: ""
