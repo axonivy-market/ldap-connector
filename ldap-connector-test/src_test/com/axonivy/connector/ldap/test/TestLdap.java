@@ -38,8 +38,11 @@ class TestLdap {
     for(var v : Ivy.var().all()) {
       System.out.println(v.name() + " " + v.value());
     }
-    username = Ivy.var().get("LdapConnector.Username");
-    password = Ivy.var().get("LdapConnector.Password");
+
+    username = System.getProperty("adusername");
+    password = System.getProperty("adpw");
+
+    System.out.println(username + " " + password);
 
     if (StringUtils.isEmpty(username)) {
       try (var in = TestLdap.class.getResourceAsStream("credentials.properties")) {
