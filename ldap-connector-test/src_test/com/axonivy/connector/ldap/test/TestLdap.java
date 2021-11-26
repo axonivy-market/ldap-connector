@@ -35,6 +35,9 @@ class TestLdap {
 
   @BeforeAll
   static void setupConfig() throws IOException {
+    for(var v : Ivy.var().all()) {
+      System.out.println(v.name() + " " + v.value());
+    }
     username = Ivy.var().get("LdapConnector.Username");
     password = Ivy.var().get("LdapConnector.Password");
 

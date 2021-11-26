@@ -9,4 +9,4 @@ Variables:
   LdapConnector:
     Username: ""
     Password: ""
-    Url: "ldap://test-ad.ivyteam.io:389"
+    Url: "ldap://159.100.249.76:389"
