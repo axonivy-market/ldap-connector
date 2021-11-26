@@ -2,44 +2,31 @@ package com.axonivy.connector.ldap.util;
 
 import org.apache.commons.lang3.StringUtils;
 
-import ch.ivyteam.naming.JndiProvider;
-
 public class JndiConfig {
 
-  public static final String AUTH_KIND_NONE = "none";
-  public static final String AUTH_KIND_SIMPLE = "simple";
-
-  private final JndiProvider provider;
+  private final String provider;
   private final String url;
-  private final String authenticationKind;
   private final String userName;
   private final String password;
   private final String connectionTimeout;
-  private final boolean useSsl;
-  private final boolean useLdapConnectionPool;
+  private final String referral;
 
-  private JndiConfig(JndiProvider provider, String url, String authenticationKind, String userName,
-          String password, boolean useSsl, boolean useLdapConnectionPool, String connectionTimeout) {
+  private JndiConfig(String provider, String url, String userName,
+          String password, String connectionTimeout, String referral) {
     this.provider = provider;
     this.url = url;
-    this.authenticationKind = authenticationKind;
     this.userName = userName;
     this.password = password;
     this.connectionTimeout = connectionTimeout;
-    this.useSsl = useSsl;
-    this.useLdapConnectionPool = useLdapConnectionPool;
+    this.referral = referral;
   }
 
-  public JndiProvider getProvider() {
+  public String getProvider() {
     return provider;
   }
 
   public String getUrl() {
     return url;
-  }
-
-  public String getAuthenticationKind() {
-    return authenticationKind;
   }
 
   public String getUserName() {
@@ -50,14 +37,6 @@ public class JndiConfig {
     return password;
   }
 
-  public boolean isUseSsl() {
-    return useSsl;
-  }
-
-  public boolean isUseLdapConnectionPool() {
-    return useLdapConnectionPool;
-  }
-
   public static Builder create() {
     return new Builder();
   }
@@ -66,42 +45,36 @@ public class JndiConfig {
     return connectionTimeout;
   }
 
+  public String getReferral() {
+    return referral;
+  }
+
   public static Builder create(JndiConfig config) {
     return new Builder()
-            .authenticationKind(config.authenticationKind)
             .password(config.password)
             .provider(config.provider)
             .url(config.url)
-            .useLdapConnectionPool(config.useLdapConnectionPool)
             .userName(config.userName)
-            .useSsl(config.useSsl);
+            .connectionTimeout(config.connectionTimeout)
+            .referral(config.referral);
   }
 
   @SuppressWarnings("hiding")
   public static final class Builder {
-    private JndiProvider provider = new JndiProvider(null, null);
+    private String provider = "";
     private String url = "";
-    private String authenticationKind = "none";
     private String userName = "";
     private String password = "";
-    private String connectionTimeout = "1000";
-    private boolean useSsl = false;
-    private boolean useLdapConnectionPool = false;
+    private String connectionTimeout = "";
+    private String referral = "";
 
-    public Builder provider(JndiProvider provider) {
-      if (provider != null) {
-        this.provider = provider;
-      }
+    public Builder provider(String provider) {
+      this.provider = StringUtils.defaultString(provider);
       return this;
     }
 
     public Builder url(String url) {
       this.url = StringUtils.defaultString(url);
-      return this;
-    }
-
-    public Builder authenticationKind(String authenticationKind) {
-      this.authenticationKind = StringUtils.defaultString(authenticationKind);
       return this;
     }
 
@@ -120,19 +93,14 @@ public class JndiConfig {
       return this;
     }
 
-    public Builder useSsl(boolean useSsl) {
-      this.useSsl = useSsl;
-      return this;
-    }
-
-    public Builder useLdapConnectionPool(boolean useLdapConnectionPool) {
-      this.useLdapConnectionPool = useLdapConnectionPool;
+    public Builder referral(String referral) {
+      this.referral = StringUtils.defaultString(referral);
       return this;
     }
 
     public JndiConfig toJndiConfig() {
-      return new JndiConfig(provider, url, authenticationKind, userName, password, useSsl,
-              useLdapConnectionPool, connectionTimeout);
+      return new JndiConfig(provider, url, userName, password,
+              connectionTimeout, referral);
     }
 
   }
