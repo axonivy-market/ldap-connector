@@ -24,31 +24,12 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.1</version>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <echo>username : ${activedirectory.username}</echo>
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M5</version>
         <configuration>
           <systemPropertyVariables>
-            <adusername>${activedirectory.username}</adusername>
-            <adpw>${activedirectory.password}</adpw>
-
+            <adUsername>${activedirectory.username}</adUsername>
+            <adPassword>${activedirectory.password}</adPassword>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -60,10 +41,6 @@
         <configuration>
           <ivyVersion>[9.3.0,]</ivyVersion>
           <engineDownloadUrl>https://developer.axonivy.com/permalink/nightly/axonivy-engine.zip</engineDownloadUrl>
-          <additionalVmOptions>
-            -Divy.Applications.test.Variables.LdapConnector.Username=${activedirectory.username}
-            -Divy.Applications.test.Variables.LdapConnector.Password=${activedirectory.password}
-          </additionalVmOptions>
         </configuration>
       </plugin>
     </plugins>

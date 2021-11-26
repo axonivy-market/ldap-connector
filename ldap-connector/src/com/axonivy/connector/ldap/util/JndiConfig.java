@@ -9,21 +9,23 @@ public class JndiConfig {
   public static final String AUTH_KIND_NONE = "none";
   public static final String AUTH_KIND_SIMPLE = "simple";
 
-  private JndiProvider provider;
-  private String url;
-  private String authenticationKind;
-  private String userName;
-  private String password;
-  private boolean useSsl;
-  private boolean useLdapConnectionPool;
+  private final JndiProvider provider;
+  private final String url;
+  private final String authenticationKind;
+  private final String userName;
+  private final String password;
+  private final String connectionTimeout;
+  private final boolean useSsl;
+  private final boolean useLdapConnectionPool;
 
   private JndiConfig(JndiProvider provider, String url, String authenticationKind, String userName,
-          String password, boolean useSsl, boolean useLdapConnectionPool) {
+          String password, boolean useSsl, boolean useLdapConnectionPool, String connectionTimeout) {
     this.provider = provider;
     this.url = url;
     this.authenticationKind = authenticationKind;
     this.userName = userName;
     this.password = password;
+    this.connectionTimeout = connectionTimeout;
     this.useSsl = useSsl;
     this.useLdapConnectionPool = useLdapConnectionPool;
   }
@@ -60,6 +62,10 @@ public class JndiConfig {
     return new Builder();
   }
 
+  public String getConnectionTimeout() {
+    return connectionTimeout;
+  }
+
   public static Builder create(JndiConfig config) {
     return new Builder()
             .authenticationKind(config.authenticationKind)
@@ -78,6 +84,7 @@ public class JndiConfig {
     private String authenticationKind = "none";
     private String userName = "";
     private String password = "";
+    private String connectionTimeout = "1000";
     private boolean useSsl = false;
     private boolean useLdapConnectionPool = false;
 
@@ -108,6 +115,11 @@ public class JndiConfig {
       return this;
     }
 
+    public Builder connectionTimeout(String connectionTimeout) {
+      this.connectionTimeout = StringUtils.defaultString(connectionTimeout);
+      return this;
+    }
+
     public Builder useSsl(boolean useSsl) {
       this.useSsl = useSsl;
       return this;
@@ -120,7 +132,7 @@ public class JndiConfig {
 
     public JndiConfig toJndiConfig() {
       return new JndiConfig(provider, url, authenticationKind, userName, password, useSsl,
-              useLdapConnectionPool);
+              useLdapConnectionPool, connectionTimeout);
     }
 
   }

@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 
 public class LdapQuery {
 
-  private String rootObject;
-  private String filter;
-  private SearchControls searchControl;
+  private final String rootObject;
+  private final String filter;
+  private final SearchControls searchControl;
 
   public LdapQuery(String rootObject, String filter, SearchControls searchcontrol) {
     this.rootObject = rootObject;

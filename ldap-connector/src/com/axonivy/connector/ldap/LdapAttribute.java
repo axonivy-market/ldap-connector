@@ -2,8 +2,8 @@ package com.axonivy.connector.ldap;
 
 public class LdapAttribute {
 
-  private String name;
-  private Object value;
+  private final String name;
+  private final Object value;
 
   public LdapAttribute(String name, Object value) {
     this.name = name;
