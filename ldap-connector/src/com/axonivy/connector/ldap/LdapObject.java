@@ -5,7 +5,7 @@ import java.util.List;
 
 public class LdapObject {
 
-  private List<LdapAttribute> attributes = new ArrayList<LdapAttribute>();
+  private final List<LdapAttribute> attributes = new ArrayList<LdapAttribute>();
 
   public List<LdapAttribute> getAttributes() {
     return attributes;
