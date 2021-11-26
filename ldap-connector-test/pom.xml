@@ -31,8 +31,8 @@
           <ivyVersion>[9.3.0,]</ivyVersion>
           <engineDownloadUrl>https://developer.axonivy.com/permalink/nightly/axonivy-engine.zip</engineDownloadUrl>
           <additionalVmOptions>
-            -Divy.Applications.ldapconnectortest.Variables.LdapConnector.Username=${activedirectory.username}
-            -Divy.Applications.ldapconnectortest.Variables.LdapConnector.Password=${activedirectory.password}
+            -Divy.Applications.test.Variables.LdapConnector.Username=${activedirectory.username}
+            -Divy.Applications.test.Variables.LdapConnector.Password=${activedirectory.password}
           </additionalVmOptions>
         </configuration>
       </plugin>
