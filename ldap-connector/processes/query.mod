@@ -18,7 +18,7 @@ qy0 @PushWFArc f6 '' #zField
 qy0 @CallSub f5 '' #zField
 >Proto qy0 qy0 query #zField
 qy0 f0 inParamDecl '<com.axonivy.connector.ldap.LdapQuery ldapQuery> param;' #txt
-qy0 f0 inParamInfo 'ldapQuery.description=query used to retrieve data from AD' #txt
+qy0 f0 inParamInfo 'ldapQuery.description=query used to retrieve data from LDAP server' #txt
 qy0 f0 inParamTable 'out.ldapQuery=param.ldapQuery;
 ' #txt
 qy0 f0 outParamDecl '<java.util.List<com.axonivy.connector.ldap.LdapObject> queryResult> result;' #txt

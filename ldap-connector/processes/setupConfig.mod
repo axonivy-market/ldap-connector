@@ -35,14 +35,13 @@ sg0 f3 actionCode 'import ch.ivyteam.naming.JndiProvider;
 import com.axonivy.connector.ldap.util.JndiConfig;
 
 in.jndiConfig = JndiConfig.create()
-            .authenticationKind(JndiConfig.AUTH_KIND_SIMPLE)
-            .password(ivy.var.LdapConnector_Password)
-            .provider(JndiProvider.NOVELL_E_DIRECTORY)
-            .url(ivy.var.LdapConnector_Url)
-            .useLdapConnectionPool(false)
-            .userName(ivy.var.LdapConnector_Username)
-            .connectionTimeout("1000")
-            .useSsl(false).toJndiConfig();' #txt
+						.provider(ivy.var.LdapConnector_Provider)
+						.url(ivy.var.LdapConnector_Url)
+						.userName(ivy.var.LdapConnector_Username)
+						.password(ivy.var.LdapConnector_Password)
+						.referral(ivy.var.LdapConnector_Referral)
+						.connectionTimeout(ivy.var.LdapConnector_Connection_Timeout)
+						.toJndiConfig();' #txt
 sg0 f3 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <elementInfo>
     <language>
