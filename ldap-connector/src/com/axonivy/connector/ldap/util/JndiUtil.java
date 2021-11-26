@@ -34,6 +34,7 @@ public class JndiUtil {
       env.put(LDAP_CONNECTION_POOL, "true");
     }
     env.put(Context.REFERRAL, "follow");
+    env.put("com.sun.jndi.ldap.connect.timeout", "1000");
     return env;
   }
 }
