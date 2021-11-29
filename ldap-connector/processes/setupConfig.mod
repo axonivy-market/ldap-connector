@@ -31,8 +31,7 @@ sg0 f0 81 49 30 30 -13 17 #rect
 sg0 f1 337 49 30 30 0 15 #rect
 sg0 f3 actionTable 'out=in;
 ' #txt
-sg0 f3 actionCode 'import ch.ivyteam.naming.JndiProvider;
-import com.axonivy.connector.ldap.util.JndiConfig;
+sg0 f3 actionCode 'import com.axonivy.connector.ldap.util.JndiConfig;
 
 in.jndiConfig = JndiConfig.create()
 						.provider(ivy.var.LdapConnector_Provider)
