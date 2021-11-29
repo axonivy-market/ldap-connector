@@ -22,12 +22,11 @@ import com.axonivy.connector.ldap.util.JndiConfig;
 
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.environment.IvyTest;
-import ch.ivyteam.naming.JndiProvider;
 
 @IvyTest
 class TestLdap {
   private static JndiConfig config;
-  private static LdapQueryExecutor queryExecuter;
+  private static LdapQueryExecutor queryExecutor;
   private static String password;
   private static String username;
 
@@ -50,15 +49,14 @@ class TestLdap {
       }
     }
     config = JndiConfig.create()
-            .authenticationKind(JndiConfig.AUTH_KIND_SIMPLE)
             .password(password)
-            .provider(JndiProvider.NOVELL_E_DIRECTORY)
             .url(Ivy.var().get("LdapConnector.Url"))
-            .useLdapConnectionPool(false)
             .userName(username)
-            .connectionTimeout("1000")
-            .useSsl(false).toJndiConfig();
-    queryExecuter = new LdapQueryExecutor(config);
+            .connectionTimeout(Ivy.var().get("LdapConnector.Connection.Timeout"))
+            .provider(Ivy.var().get("LdapConnector.Provider"))
+            .referral(Ivy.var().get("LdapConnector.Referral"))
+            .toJndiConfig();
+    queryExecutor = new LdapQueryExecutor(config);
   }
 
   @BeforeEach
@@ -77,7 +75,7 @@ class TestLdap {
             .rootObject("CN=Users,DC=zugtstdomain,DC=wan")
             .filter("(objectClass=person)")
             .toLdapQuery();
-    List<LdapObject> queryResult = queryExecuter.perform(query);
+    List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(2);
   }
 
@@ -87,7 +85,7 @@ class TestLdap {
             .rootObject("DC=zugtstdomain,DC=wan")
             .filter("(objectClass=group)")
             .toLdapQuery();
-    List<LdapObject> queryResult = queryExecuter.perform(query);
+    List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSizeGreaterThan(0);
   }
 
@@ -97,7 +95,7 @@ class TestLdap {
             .rootObject("DC=zugtstdomain,DC=wan")
             .filter("(objectClass=group1xy)")
             .toLdapQuery();
-    List<LdapObject> queryResult = queryExecuter.perform(query);
+    List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(0);
   }
 
@@ -109,7 +107,7 @@ class TestLdap {
             .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
             .searchControl(searchcontrol)
             .toLdapQuery();
-    List<LdapObject> queryResult = queryExecuter.perform(query);
+    List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes()).hasSize(1);
   }
 
@@ -119,7 +117,7 @@ class TestLdap {
             .rootObject("DC=zugtstdomain,DC=wan")
             .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
             .toLdapQuery();
-    List<LdapObject> queryResult = queryExecuter.perform(query);
+    List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes()).hasSizeGreaterThan(1);
   }
 
@@ -129,7 +127,7 @@ class TestLdap {
             .rootObject("DC=zugtstdomain,DC=wan")
             .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
             .toLdapQuery();
-    List<LdapObject> queryResult = queryExecuter.perform(query);
+    List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(1);
     assertThat(queryResult.get(0).getAttributes())
             .hasSizeGreaterThan(1)
