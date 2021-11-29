@@ -6,8 +6,8 @@ url String #field
 url PERSISTENT #fieldModifier
 user String #field
 user PERSISTENT #fieldModifier
-Password String #field
-Password PERSISTENT #fieldModifier
+password String #field
+password PERSISTENT #fieldModifier
 rootObject String #field
 rootObject PERSISTENT #fieldModifier
 filter String #field
