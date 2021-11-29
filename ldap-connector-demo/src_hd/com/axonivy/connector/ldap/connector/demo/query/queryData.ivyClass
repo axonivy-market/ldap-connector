@@ -16,3 +16,7 @@ scope Integer #field
 scope PERSISTENT #fieldModifier
 queryResult java.util.List<com.axonivy.connector.ldap.LdapObject> #field
 queryResult PERSISTENT #fieldModifier
+returningAttributes java.util.List<String> #field
+returningAttributes PERSISTENT #fieldModifier
+attributeName String #field
+attributeName PERSISTENT #fieldModifier

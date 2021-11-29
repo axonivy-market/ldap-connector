@@ -51,6 +51,13 @@
 					<p:outputLabel value="Filter" for="Filter" style="float:left" />
 					<p:inputText value="#{data.filter}" id="Filter" required="true"
 						style="float:left" />
+					<p:commandButton id="addAttribute" actionListener="#{logic.addAttribute}"
+						ajax="false" value="Add Returning Attribute" update="form"
+						icon="ui-icon-plus" />
+					<p:inputText value="#{data.attributeName}" id="returningAttribute" required="false"
+						style="float:left" />
+					<h:outputText value="Returning Attributes #{data.returningAttributes}" />
+					<p:spacer />
 					<p:commandButton id="ExecuteQuery" actionListener="#{logic.query}"
 						ajax="false" value="Execute Query" update="form"
 						icon="ui-icon-search" />

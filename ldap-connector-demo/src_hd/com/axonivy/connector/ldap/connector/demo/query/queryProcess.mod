@@ -24,6 +24,9 @@ qs0 @ErrorBoundaryEvent f11 '' #zField
 qs0 @GridStep f12 '' #zField
 qs0 @PushWFArc f13 '' #zField
 qs0 @PushWFArc f14 '' #zField
+qs0 @UdEvent f15 '' #zField
+qs0 @UdProcessEnd f16 '' #zField
+qs0 @PushWFArc f17 '' #zField
 >Proto qs0 qs0 queryProcess #zField
 qs0 f0 guid 17D6ADD32EBA05F1 #txt
 qs0 f0 method start() #txt
@@ -74,6 +77,9 @@ ivy.var.set("LdapConnector.Url", in.url);
 
 SearchControls searchControl = new SearchControls();
 searchControl.setSearchScope(in.scope);
+if(in.returningAttributes.size() > 0){
+	searchControl.setReturningAttributes(in.returningAttributes);
+}
 
 param.ldapQuery = LdapQuery.create()
             .rootObject(in.rootObject)
@@ -143,6 +149,21 @@ qs0 f12 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 qs0 f12 232 314 112 44 -41 -8 #rect
 qs0 f13 241 268 288 314 #arcP
 qs0 f14 288 314 414 232 #arcP
+qs0 f15 guid 17D6BFB073B4D4A6 #txt
+qs0 f15 actionTable 'out=in;
+' #txt
+qs0 f15 actionCode 'out.returningAttributes.add(in.attributeName);
+in.attributeName = "";' #txt
+qs0 f15 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<elementInfo>
+    <language>
+        <name>addAttribute</name>
+    </language>
+</elementInfo>
+' #txt
+qs0 f15 83 403 26 26 -32 15 #rect
+qs0 f16 211 403 26 26 0 12 #rect
+qs0 f17 109 416 211 416 #arcP
 >Proto qs0 .type com.axonivy.connector.ldap.connector.demo.query.queryData #txt
 >Proto qs0 .processKind HTML_DIALOG #txt
 >Proto qs0 -8 -8 16 16 16 26 #rect
@@ -158,3 +179,5 @@ qs0 f11 mainOut f13 tail #connect
 qs0 f13 head f12 mainIn #connect
 qs0 f12 mainOut f14 tail #connect
 qs0 f14 head f7 mainIn #connect
+qs0 f15 mainOut f17 tail #connect
+qs0 f17 head f16 mainIn #connect
