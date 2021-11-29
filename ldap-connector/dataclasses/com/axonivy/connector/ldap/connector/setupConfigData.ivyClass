@@ -1,0 +1,4 @@
+setupConfigData #class
+com.axonivy.connector.ldap.connector #namespace
+jndiConfig com.axonivy.connector.ldap.util.JndiConfig #field
+jndiConfig PERSISTENT #fieldModifier

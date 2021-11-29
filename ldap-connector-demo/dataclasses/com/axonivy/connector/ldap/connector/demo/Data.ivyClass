@@ -1,2 +1,4 @@
 Data #class
 com.axonivy.connector.ldap.connector.demo #namespace
+queryResult java.util.List<com.axonivy.connector.ldap.LdapObject> #field
+queryResult PERSISTENT #fieldModifier
