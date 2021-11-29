@@ -63,20 +63,24 @@ qs0 f3 83 147 26 26 -15 15 #rect
 qs0 f4 211 147 26 26 0 12 #rect
 qs0 f5 109 160 211 160 #arcP
 qs0 f7 411 211 26 26 0 12 #rect
-qs0 f9 processCall query:call(com.axonivy.connector.ldap.LdapQuery) #txt
-qs0 f9 requestActionDecl '<com.axonivy.connector.ldap.LdapQuery ldapQuery> param;' #txt
+qs0 f9 processCall query:call(com.axonivy.connector.ldap.LdapQuery,com.axonivy.connector.ldap.util.JndiConfig) #txt
+qs0 f9 requestActionDecl '<com.axonivy.connector.ldap.LdapQuery ldapQuery,com.axonivy.connector.ldap.util.JndiConfig jndiConfig> param;' #txt
 qs0 f9 requestActionCode 'import javax.naming.directory.SearchControls;
 import com.axonivy.connector.ldap.LdapQuery;
 import com.axonivy.connector.ldap.util.JndiConfig;
 
-ivy.var.set("LdapConnector.Username", in.user);
-ivy.var.set("LdapConnector.Password", in.Password);
-ivy.var.set("LdapConnector.Provider", in.provider);
-ivy.var.set("LdapConnector.Url", in.url);
-
+param.jndiConfig = JndiConfig.create()
+						.provider(in.provider)
+						.url(in.url)
+						.userName(in.user)
+						.password(in.Password)
+						.referral(ivy.var.LdapConnector_Referral)
+						.connectionTimeout(ivy.var.LdapConnector_Connection_Timeout)
+						.toJndiConfig();
 
 SearchControls searchControl = new SearchControls();
 searchControl.setSearchScope(in.scope);
+
 if(in.returningAttributes.size() > 0){
 	searchControl.setReturningAttributes(in.returningAttributes);
 }
@@ -87,28 +91,12 @@ param.ldapQuery = LdapQuery.create()
             .searchControl(searchControl)
             .toLdapQuery();
 
-/*param.jndiConfig = JndiConfig.create()
-						.provider(in.provider)
-						.url(in.url)
-						.userName(in.user)
-						.password(in.Password)
-						.referral(ivy.var.LdapConnector_Referral)
-						.connectionTimeout(ivy.var.LdapConnector_Connection_Timeout)
-						.toJndiConfig();*/
 						
             
  ' #txt
 qs0 f9 responseMappingAction 'out=in;
 out.queryResult=result.queryResult;
 ' #txt
-qs0 f9 responseActionCode 'import com.axonivy.connector.ldap.LdapAttribute;
-import com.axonivy.connector.ldap.LdapObject;
-
-for(LdapObject o : result.queryResult){
-	for(LdapAttribute a : o.getAttributes()){
-		ivy.log.debug("name : " + a.getName() + " value : " + a.getValue());
-	}
-}' #txt
 qs0 f9 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <elementInfo>
     <language>
