@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +22,7 @@ import com.axonivy.connector.ldap.LdapAttribute;
 import com.axonivy.connector.ldap.LdapObject;
 import com.axonivy.connector.ldap.LdapQuery;
 import com.axonivy.connector.ldap.LdapQueryExecutor;
+import com.axonivy.connector.ldap.LdapWriter;
 import com.axonivy.connector.ldap.util.JndiConfig;
 
 import ch.ivyteam.ivy.environment.Ivy;
@@ -27,6 +32,7 @@ import ch.ivyteam.ivy.environment.IvyTest;
 class TestLdap {
   private static JndiConfig config;
   private static LdapQueryExecutor queryExecutor;
+  private static LdapWriter writer;
   private static String password;
   private static String username;
 
@@ -57,6 +63,7 @@ class TestLdap {
             .referral(Ivy.var().get("LdapConnector.Referral"))
             .toJndiConfig();
     queryExecutor = new LdapQueryExecutor(config);
+    writer = new LdapWriter(config);
   }
 
   @BeforeEach
@@ -133,6 +140,27 @@ class TestLdap {
             .hasSizeGreaterThan(1)
             .extracting(LdapAttribute::getName, LdapAttribute::getValue)
             .contains(tuple("cn", "Users"));
+  }
+
+  @Test
+  void create_and_destroy_user() throws NamingException {
+    String distinguishedName = "CN=testldap,CN=Users,DC=zugtstdomain,DC=wan";
+    Attributes newObject = new BasicAttributes();
+    newObject.put(new BasicAttribute("cn", "testldap"));
+    newObject.put(new BasicAttribute("objectClass", "user"));
+    writer.createObject(distinguishedName, newObject);
+
+    query = LdapQuery.create(query)
+            .rootObject("DC=zugtstdomain,DC=wan")
+            .filter("(distinguishedName=" + distinguishedName + ")")
+            .toLdapQuery();
+    List<LdapObject> queryResult = queryExecutor.perform(query);
+    assertThat(queryResult).hasSize(1);
+
+    writer.destroyObject(distinguishedName);
+
+    queryResult = queryExecutor.perform(query);
+    assertThat(queryResult).isEmpty();
   }
 
 }
