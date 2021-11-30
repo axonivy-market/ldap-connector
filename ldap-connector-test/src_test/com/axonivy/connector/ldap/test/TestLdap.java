@@ -145,20 +145,20 @@ class TestLdap {
   @Test
   void create_and_destroy_user() throws NamingException {
     String distinguishedName = "CN=testldap,CN=Users,DC=zugtstdomain,DC=wan";
-    Attributes newObject = new BasicAttributes();
-    newObject.put(new BasicAttribute("cn", "testldap"));
-    newObject.put(new BasicAttribute("objectClass", "user"));
-    writer.createObject(distinguishedName, newObject);
-
     query = LdapQuery.create(query)
             .rootObject("DC=zugtstdomain,DC=wan")
             .filter("(distinguishedName=" + distinguishedName + ")")
             .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
+    assertThat(queryResult).isEmpty();
+
+    Attributes newObject = new BasicAttributes();
+    newObject.put(new BasicAttribute("objectClass", "user"));
+    writer.createObject(distinguishedName, newObject);
+    queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(1);
 
     writer.destroyObject(distinguishedName);
-
     queryResult = queryExecutor.perform(query);
     assertThat(queryResult).isEmpty();
   }
