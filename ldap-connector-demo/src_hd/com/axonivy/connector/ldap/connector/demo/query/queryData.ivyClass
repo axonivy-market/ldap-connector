@@ -20,3 +20,5 @@ returningAttributes java.util.List<String> #field
 returningAttributes PERSISTENT #fieldModifier
 attributeName String #field
 attributeName PERSISTENT #fieldModifier
+errorMessage String #field
+errorMessage PERSISTENT #fieldModifier

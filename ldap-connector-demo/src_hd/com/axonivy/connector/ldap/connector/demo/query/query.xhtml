@@ -11,6 +11,13 @@
 		<ui:define name="content">
 
 			<h3>LDAP Query Demo</h3>
+			<p>This demo shows how easy it is to retrieve data from a server
+				that supports LDAP. To do this, you must first specify the Jndi
+				Server Configuration to connect to the desired server. Note that
+				these configurations can be set permanently in "variables.yaml". In
+				order to retrieve data, you can enter a query that will be handled
+				in the underlying subprocess. The returned objects are displayed in
+				the results table.</p>
 
 			<h:form id="form">
 				<p:messages />
@@ -22,10 +29,12 @@
 					<p:inputText value="#{data.provider}" id="Provider" required="true"
 						style="float:left" />
 					<p:outputLabel value="Url" for="Url" style="float:left" />
-					<p:inputText value="#{data.url}" id="Url" required="true"
+					<p:inputText value="#{data.url}"
+						placeholder="ldap://111.111.111.11:389" id="Url" required="true"
 						style="float:left" />
 					<p:outputLabel value="User" for="User" style="float:left" />
-					<p:inputText value="#{data.user}" id="User" required="false"
+					<p:inputText value="#{data.user}" id="User"
+						placeholder="cn=admin,cn=Users,dc=domain,dc=wan" required="false"
 						style="float:left" />
 					<p:outputLabel value="Password" for="Password" style="float:left" />
 					<p:inputText value="#{data.password}" type="password" id="Password"
@@ -40,7 +49,8 @@
 					</f:facet>
 					<p:outputLabel value="Root Object" for="rootObject"
 						style="float:left" />
-					<p:inputText value="#{data.rootObject}" id="rootObject"
+					<p:inputText value="#{data.rootObject}"
+						placeholder="CN=Users,DC=domain,DC=wan" id="rootObject"
 						required="true" style="float:left" />
 					<p:outputLabel value="Scope" for="Scope" style="float:left" />
 					<p:selectOneMenu id="Scope" value="#{data.scope}">
@@ -51,12 +61,13 @@
 					<p:outputLabel value="Filter" for="Filter" style="float:left" />
 					<p:inputText value="#{data.filter}" id="Filter" required="true"
 						style="float:left" />
-					<p:commandButton id="addAttribute" actionListener="#{logic.addAttribute}"
-						ajax="false" value="Add Returning Attribute" update="form"
-						icon="ui-icon-plus" />
-					<p:inputText value="#{data.attributeName}" id="returningAttribute" required="false"
-						style="float:left" />
-					<h:outputText value="Returning Attributes #{data.returningAttributes}" />
+					<p:commandButton id="addAttribute"
+						actionListener="#{logic.addAttribute}" ajax="false"
+						value="Add Returning Attribute" update="form" icon="ui-icon-plus" />
+					<p:inputText value="#{data.attributeName}" id="returningAttribute"
+						required="false" style="float:left" />
+					<h:outputText
+						value="Returning Attributes #{data.returningAttributes}" />
 					<p:spacer />
 					<p:commandButton id="ExecuteQuery" actionListener="#{logic.query}"
 						ajax="false" value="Execute Query" update="form"
