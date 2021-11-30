@@ -9,7 +9,7 @@ Variables:
   LdapConnector:
     Username: ""
     Password: ""
-    Provider: ""
-    Referral: ""
+    Provider: "com.sun.jndi.ldap.LdapCtxFactory"
+    Referral: "follow"
     Url: ""
-    Connection.Timeout: ""
+    Connection.Timeout: "1000"
