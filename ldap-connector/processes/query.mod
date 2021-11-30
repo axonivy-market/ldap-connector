@@ -36,6 +36,7 @@ qy0 f0 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 </elementInfo>
 ' #txt
 qy0 f0 81 49 30 30 -13 17 #rect
+qy0 f0 res:/webContent/icons/ldap.png?small #fDecoratorIcon
 qy0 f1 497 49 30 30 0 15 #rect
 qy0 f3 actionTable 'out=in;
 ' #txt
@@ -52,6 +53,7 @@ qy0 f3 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 </elementInfo>
 ' #txt
 qy0 f3 328 42 112 44 -15 -8 #rect
+qy0 f3 res:/webContent/icons/ldap.png #fDecoratorIcon
 qy0 f2 440 64 497 64 #arcP
 qy0 f4 280 64 328 64 #arcP
 qy0 f6 111 64 168 64 #arcP
@@ -87,10 +89,18 @@ qy0 f7 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 </elementInfo>
 ' #txt
 qy0 f7 81 161 30 30 -13 17 #rect
+qy0 f7 res:/webContent/icons/ldap.png?small #fDecoratorIcon
 qy0 f8 111 176 328 64 #arcP
 qy0 f8 0 0.7891424684832362 0 0 #arcLabel
 >Proto qy0 .type com.axonivy.connector.ldap.connector.queryData #txt
 >Proto qy0 .processKind CALLABLE_SUB #txt
+>Proto qy0 .xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<elementInfo>
+    <language>
+        <desc>This LDAP connector allows you to query objects from a given directory via LDAP.</desc>
+    </language>
+</elementInfo>
+' #txt
 >Proto qy0 0 0 32 24 18 0 #rect
 >Proto qy0 @|BIcon #fIcon
 qy0 f3 mainOut f2 tail #connect

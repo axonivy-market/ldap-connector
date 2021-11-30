@@ -20,21 +20,20 @@ qs0 @CallSub f9 '' #zField
 qs0 @UdEvent f6 '' #zField
 qs0 @PushWFArc f8 '' #zField
 qs0 @PushWFArc f10 '' #zField
-qs0 @ErrorBoundaryEvent f11 '' #zField
 qs0 @GridStep f12 '' #zField
-qs0 @PushWFArc f13 '' #zField
 qs0 @PushWFArc f14 '' #zField
 qs0 @UdEvent f15 '' #zField
 qs0 @UdProcessEnd f16 '' #zField
 qs0 @PushWFArc f17 '' #zField
+qs0 @PushWFArc f13 '' #zField
+qs0 @ErrorBoundaryEvent f11 '' #zField
 >Proto qs0 qs0 queryProcess #zField
 qs0 f0 guid 17D6ADD32EBA05F1 #txt
 qs0 f0 method start() #txt
 qs0 f0 inParameterDecl '<> param;' #txt
 qs0 f0 inParameterMapAction 'out.filter="(objectClass=*)";
-out.Password=ivy.var.LdapConnector_Password;
+out.password=ivy.var.LdapConnector_Password;
 out.provider=ivy.var.LdapConnector_Provider;
-out.rootObject="CN=Users,DC=zugtstdomain,DC=wan";
 out.url=ivy.var.LdapConnector_Url;
 out.user=ivy.var.LdapConnector_Username;
 ' #txt
@@ -118,15 +117,12 @@ qs0 f6 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 qs0 f6 83 211 26 26 -15 15 #rect
 qs0 f8 109 224 144 224 #arcP
 qs0 f10 256 224 411 224 #arcP
-qs0 f11 actionTable 'out=in;
-' #txt
-qs0 f11 attachedToRef 17D6ADD32E68D727-f9 #txt
-qs0 f11 217 241 30 30 0 15 #rect
 qs0 f12 actionTable 'out=in;
 ' #txt
 qs0 f12 actionCode 'import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to execute query", null));' #txt
+FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to execute query - " + in.errorMessage, null));
+' #txt
 qs0 f12 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <elementInfo>
     <language>
@@ -135,7 +131,6 @@ qs0 f12 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 </elementInfo>
 ' #txt
 qs0 f12 232 314 112 44 -41 -8 #rect
-qs0 f13 241 268 288 314 #arcP
 qs0 f14 288 314 414 232 #arcP
 qs0 f15 guid 17D6BFB073B4D4A6 #txt
 qs0 f15 actionTable 'out=in;
@@ -154,6 +149,17 @@ qs0 f15 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 qs0 f15 83 403 26 26 -32 15 #rect
 qs0 f16 211 403 26 26 0 12 #rect
 qs0 f17 109 416 211 416 #arcP
+qs0 f13 241 268 288 314 #arcP
+qs0 f11 actionTable 'out=in;
+' #txt
+qs0 f11 actionCode 'import org.apache.commons.lang3.exception.ExceptionUtils;
+
+Throwable rootCause = ExceptionUtils.getRootCause(error.getTechnicalCause());
+out.errorMessage = rootCause.getMessage();
+
+' #txt
+qs0 f11 attachedToRef 17D6ADD32E68D727-f9 #txt
+qs0 f11 217 241 30 30 0 15 #rect
 >Proto qs0 .type com.axonivy.connector.ldap.connector.demo.query.queryData #txt
 >Proto qs0 .processKind HTML_DIALOG #txt
 >Proto qs0 -8 -8 16 16 16 26 #rect
