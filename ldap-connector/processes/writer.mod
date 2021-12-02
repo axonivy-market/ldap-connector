@@ -48,7 +48,7 @@ LdapWriter writer = new LdapWriter(in.jndiConfig);
 if(in.action.equalsIgnoreCase("create")){
 	writer.createObject(in.distinguishedName, in.attributes);
 }
-else if(in.action.equalsIgnoreCase("destroy")){
+else if(in.action.equalsIgnoreCase("delete")){
 	writer.destroyObject(in.distinguishedName);
 }' #txt
 wr0 f3 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -63,16 +63,16 @@ wr0 f3 res:/webContent/icons/ldap.png #fDecoratorIcon
 wr0 f2 560 80 649 80 #arcP
 wr0 f5 inParamDecl '<String distinguishedName> param;' #txt
 wr0 f5 inParamInfo 'distinguishedName.description=unique name of the object to be deleted' #txt
-wr0 f5 inParamTable 'out.action="destroy";
+wr0 f5 inParamTable 'out.action="delete";
 out.distinguishedName=param.distinguishedName;
 ' #txt
 wr0 f5 outParamDecl '<> result;' #txt
-wr0 f5 callSignature destroy(String) #txt
+wr0 f5 callSignature delete(String) #txt
 wr0 f5 @CG|tags connector #txt
 wr0 f5 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <elementInfo>
     <language>
-        <name>destroy(String)</name>
+        <name>delete(String)</name>
     </language>
 </elementInfo>
 ' #txt
@@ -100,7 +100,7 @@ wr0 f6 111 64 256 80 #arcP
 >Proto wr0 .xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <elementInfo>
     <language>
-        <desc>This LDAP connector allows you to add and remove objects to a given directory via LDAP.</desc>
+        <desc>This LDAP connector allows you to create and delete objects in a specific directory via LDAP.</desc>
     </language>
 </elementInfo>
 ' #txt
