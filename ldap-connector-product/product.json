@@ -6,7 +6,7 @@
 				"projects": [
 					{
 						"groupId": "com.axonivy.connector.ldap",
-						"artifactId": "${project.name}-demo",
+						"artifactId": "ldap-connector-demo",
 						"version": "${version}",
 						"type": "iar"
 					}
@@ -28,7 +28,7 @@
 				"dependencies": [
 					{
 						"groupId": "com.axonivy.connector.ldap",
-						"artifactId": "${project.name}",
+						"artifactId": "ldap-connector",
 						"version": "${version}",
 						"type": "iar"
 					}
