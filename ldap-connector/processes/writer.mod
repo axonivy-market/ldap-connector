@@ -20,12 +20,15 @@ wr0 @PushWFArc f4 '' #zField
 wr0 @PushWFArc f6 '' #zField
 >Proto wr0 wr0 writer #zField
 wr0 f0 inParamDecl '<String distinguishedName,javax.naming.directory.Attributes attributes> param;' #txt
+wr0 f0 inParamInfo 'attributes.description=attributes that define the new object
+distinguishedName.description=unique name of the new object' #txt
 wr0 f0 inParamTable 'out.action="create";
 out.attributes=param.attributes;
 out.distinguishedName=param.distinguishedName;
 ' #txt
 wr0 f0 outParamDecl '<> result;' #txt
 wr0 f0 callSignature create(String,javax.naming.directory.Attributes) #txt
+wr0 f0 @CG|tags connector #txt
 wr0 f0 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <elementInfo>
     <language>
@@ -59,11 +62,13 @@ wr0 f3 448 58 112 44 -13 -8 #rect
 wr0 f3 res:/webContent/icons/ldap.png #fDecoratorIcon
 wr0 f2 560 80 649 80 #arcP
 wr0 f5 inParamDecl '<String distinguishedName> param;' #txt
+wr0 f5 inParamInfo 'distinguishedName.description=unique name of the object to be deleted' #txt
 wr0 f5 inParamTable 'out.action="destroy";
 out.distinguishedName=param.distinguishedName;
 ' #txt
 wr0 f5 outParamDecl '<> result;' #txt
 wr0 f5 callSignature destroy(String) #txt
+wr0 f5 @CG|tags connector #txt
 wr0 f5 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <elementInfo>
     <language>
@@ -92,6 +97,13 @@ wr0 f4 111 144 256 80 #arcP
 wr0 f6 111 64 256 80 #arcP
 >Proto wr0 .type com.axonivy.connector.ldap.connector.writerData #txt
 >Proto wr0 .processKind CALLABLE_SUB #txt
+>Proto wr0 .xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<elementInfo>
+    <language>
+        <desc>This LDAP connector allows you to add and remove objects to a given directory via LDAP.</desc>
+    </language>
+</elementInfo>
+' #txt
 >Proto wr0 0 0 32 24 18 0 #rect
 >Proto wr0 @|BIcon #fIcon
 wr0 f3 mainOut f2 tail #connect
