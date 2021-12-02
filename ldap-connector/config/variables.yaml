@@ -1,15 +1,14 @@
-# == Variables ==
-# 
-# You can define here your project Variables.
-# If you want to define/override a Variable for a specific Environment, 
-# add an additional ‘variables.yaml’ file in a subdirectory in the ‘Config’ folder: 
-# '<project>/Config/_<environment>/variables.yaml
-#
 Variables:
   LdapConnector:
-    Username: ""
-    Password: ""
+    # Ldap service provider
     Provider: "com.sun.jndi.ldap.LdapCtxFactory"
-    Referral: "follow"
+    # Url needed to contact the service provider, e.g. ldap://ldap.zug.ivy:389
     Url: ""
+    # Username and password for contacting the service provider.
+    Username: ""
+    # [password]
+    Password: ""
+    # Determines how referrals are handled by the service provider. Possible values are "follow", "ignore" or "throw".
+    Referral: "follow"
+    # Timeout for Ldap operations
     Connection.Timeout: "1000"
