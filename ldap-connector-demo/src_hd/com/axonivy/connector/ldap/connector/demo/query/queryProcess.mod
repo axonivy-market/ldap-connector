@@ -27,6 +27,9 @@ qs0 @UdProcessEnd f16 '' #zField
 qs0 @PushWFArc f17 '' #zField
 qs0 @PushWFArc f13 '' #zField
 qs0 @ErrorBoundaryEvent f11 '' #zField
+qs0 @UdEvent f18 '' #zField
+qs0 @UdProcessEnd f19 '' #zField
+qs0 @PushWFArc f20 '' #zField
 >Proto qs0 qs0 queryProcess #zField
 qs0 f0 guid 17D6ADD32EBA05F1 #txt
 qs0 f0 method start() #txt
@@ -160,6 +163,20 @@ out.errorMessage = rootCause.getMessage();
 ' #txt
 qs0 f11 attachedToRef 17D6ADD32E68D727-f9 #txt
 qs0 f11 217 241 30 30 0 15 #rect
+qs0 f18 guid 17D8F4F57DDC29E3 #txt
+qs0 f18 actionTable 'out=in;
+' #txt
+qs0 f18 actionCode out.returningAttributes.clear(); #txt
+qs0 f18 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<elementInfo>
+    <language>
+        <name>resetAttributeList</name>
+    </language>
+</elementInfo>
+' #txt
+qs0 f18 83 467 26 26 -46 15 #rect
+qs0 f19 211 467 26 26 0 12 #rect
+qs0 f20 109 480 211 480 #arcP
 >Proto qs0 .type com.axonivy.connector.ldap.connector.demo.query.queryData #txt
 >Proto qs0 .processKind HTML_DIALOG #txt
 >Proto qs0 -8 -8 16 16 16 26 #rect
@@ -177,3 +194,5 @@ qs0 f12 mainOut f14 tail #connect
 qs0 f14 head f7 mainIn #connect
 qs0 f15 mainOut f17 tail #connect
 qs0 f17 head f16 mainIn #connect
+qs0 f18 mainOut f20 tail #connect
+qs0 f20 head f19 mainIn #connect
