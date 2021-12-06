@@ -43,36 +43,57 @@
 
 				<br />
 
-				<p:panelGrid columns="2" layout="grid">
+				<p:panelGrid columns="1" layout="grid">
 					<f:facet name="header">
 						<h:outputText value="Jndi Query" />
 					</f:facet>
-					<p:outputLabel value="Root Object" for="rootObject"
-						style="float:left" />
-					<p:inputText value="#{data.rootObject}"
-						placeholder="CN=Users,DC=domain,DC=wan" id="rootObject"
-						required="true" style="float:left" />
-					<p:outputLabel value="Scope" for="Scope" style="float:left" />
-					<p:selectOneMenu id="Scope" value="#{data.scope}">
-						<f:selectItem itemLabel="Object Scope" itemValue="0" />
-						<f:selectItem itemLabel="Onelevel Scope" itemValue="1" />
-						<f:selectItem itemLabel="Subtree Scope" itemValue="2" />
-					</p:selectOneMenu>
-					<p:outputLabel value="Filter" for="Filter" style="float:left" />
-					<p:inputText value="#{data.filter}" id="Filter" required="true"
-						style="float:left" />
-					<p:commandButton id="addAttribute"
-						actionListener="#{logic.addAttribute}" ajax="false"
-						value="Add Returning Attribute" update="form" icon="ui-icon-plus" />
-					<p:inputText value="#{data.attributeName}" id="returningAttribute"
-						required="false" style="float:left" />
-					<h:outputText
-						value="Returning Attributes #{data.returningAttributes}" />
-					<p:spacer />
+					<p:tabView>
+						<p:tab title="Query">
+							<p:panelGrid columns="2" layout="grid">
+								<p:outputLabel value="Root Object" for="rootObject"
+									style="float:left" />
+								<p:inputText value="#{data.rootObject}"
+									placeholder="CN=Users,DC=domain,DC=wan" id="rootObject"
+									required="true" style="float:left" />
+								<p:outputLabel value="Scope" for="Scope" style="float:left" />
+								<p:selectOneMenu id="Scope" value="#{data.scope}">
+									<f:selectItem itemLabel="Object Scope" itemValue="0" />
+									<f:selectItem itemLabel="Onelevel Scope" itemValue="1" />
+									<f:selectItem itemLabel="Subtree Scope" itemValue="2" />
+								</p:selectOneMenu>
+								<p:outputLabel value="Filter" for="Filter" style="float:left" />
+								<p:inputText value="#{data.filter}" id="Filter" required="true"
+									style="float:left" />
+							</p:panelGrid>
+						</p:tab>
+
+						<p:tab title="Attribute Filter">
+							<p>You can specify a subset of attributes that will be
+								returned as the result. To do this, enter the attribute names
+								(e.g. distinguishedName) you are looking for and add them. If
+								the list of selected attributes is empty, all available
+								attributes are shown in the result.</p>
+							<p:panelGrid columns="2" layout="grid">
+								<p:inputText value="#{data.attributeName}"
+									id="returningAttribute" required="false" style="float:left"
+									placeholder="Attribute name" />
+								<p:commandButton id="addAttribute"
+									actionListener="#{logic.addAttribute}" ajax="false"
+									value="Add Attribute" update="form" icon="ui-icon-plus" />
+
+								<h:outputText
+									value="Selected Attributes: #{data.returningAttributes}" />
+								<p:commandButton id="resetAttributeList"
+									actionListener="#{logic.resetAttributeList}" ajax="false"
+									value="Reset Attribute List" update="form"
+									icon="ui-icon-cancel" validateClient="false" />
+
+							</p:panelGrid>
+						</p:tab>
+					</p:tabView>
 					<p:commandButton id="ExecuteQuery" actionListener="#{logic.query}"
 						ajax="false" value="Execute Query" update="form"
 						icon="ui-icon-search" />
-					<p:spacer />
 				</p:panelGrid>
 
 				<br />
