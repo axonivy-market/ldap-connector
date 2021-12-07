@@ -20,6 +20,8 @@ wr0 @PushWFArc f4 '' #zField
 wr0 @PushWFArc f6 '' #zField
 wr0 @StartSub f7 '' #zField
 wr0 @PushWFArc f8 '' #zField
+wr0 @StartSub f10 '' #zField
+wr0 @PushWFArc f12 '' #zField
 >Proto wr0 wr0 writer #zField
 wr0 f0 inParamDecl '<String distinguishedName,javax.naming.directory.Attributes attributes> param;' #txt
 wr0 f0 inParamInfo 'attributes.description=attributes that define the new object
@@ -122,12 +124,36 @@ wr0 f7 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 wr0 f7 97 249 30 30 -13 17 #rect
 wr0 f7 res:/webContent/icons/ldap.png?small #fDecoratorIcon
 wr0 f8 127 264 257 206 #arcP
+wr0 f10 inParamDecl '<String distinguishedName,javax.naming.directory.Attributes attributes,Integer dirContextAction,com.axonivy.connector.ldap.util.JndiConfig jndiConfig> param;' #txt
+wr0 f10 inParamInfo 'attributes.description=attributes used for the modification
+dirContextAction.description=defines the action, i.e. add, replace or remove
+distinguishedName.description=unique name of the object to be modified
+jndiConfig.description=configuration used for LDAP connection' #txt
+wr0 f10 inParamTable 'out.action="modify";
+out.attributes=param.attributes;
+out.dirContextAction=param.dirContextAction;
+out.distinguishedName=param.distinguishedName;
+out.jndiConfig=param.jndiConfig;
+' #txt
+wr0 f10 outParamDecl '<> result;' #txt
+wr0 f10 callSignature modify(String,javax.naming.directory.Attributes,Integer,com.axonivy.connector.ldap.util.JndiConfig) #txt
+wr0 f10 @CG|tags connector #txt
+wr0 f10 @C|.xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<elementInfo>
+    <language>
+        <name>modify(String,Attributes,Integer,JndiConfig)</name>
+    </language>
+</elementInfo>
+' #txt
+wr0 f10 97 353 30 30 -13 17 #rect
+wr0 f10 res:/webContent/icons/ldap.png?small #fDecoratorIcon
+wr0 f12 127 368 457 206 #arcP
 >Proto wr0 .type com.axonivy.connector.ldap.connector.writerData #txt
 >Proto wr0 .processKind CALLABLE_SUB #txt
 >Proto wr0 .xml '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <elementInfo>
     <language>
-        <desc>This LDAP connector allows you to create and delete objects in a specific directory via LDAP.</desc>
+        <desc>This LDAP connector allows you to create, delete and modify objects in a specific directory via LDAP.</desc>
     </language>
 </elementInfo>
 ' #txt
@@ -143,3 +169,5 @@ wr0 f0 mainOut f6 tail #connect
 wr0 f6 head f9 mainIn #connect
 wr0 f7 mainOut f8 tail #connect
 wr0 f8 head f9 mainIn #connect
+wr0 f10 mainOut f12 tail #connect
+wr0 f12 head f3 mainIn #connect

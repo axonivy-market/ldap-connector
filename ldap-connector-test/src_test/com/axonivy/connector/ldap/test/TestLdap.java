@@ -84,7 +84,7 @@ class TestLdap {
             .filter("(objectClass=person)")
             .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
-    assertThat(queryResult).hasSize(2);
+    assertThat(queryResult).hasSizeGreaterThanOrEqualTo(2);
   }
 
   @Test
