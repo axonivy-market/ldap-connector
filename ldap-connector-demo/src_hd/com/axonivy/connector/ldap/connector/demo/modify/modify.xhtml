@@ -11,7 +11,14 @@
 		<ui:define name="content">
 
 			<h3>LDAP Modify Demo</h3>
-			<p>tbd</p>
+			<p>This demo shows how easy it is to modify the attributes of an
+				object via LDAP. To do this, you must first specify the Jndi Server
+				Configuration to connect to the desired server. Note that these
+				configurations can be set permanently in "variables.yaml". To modify
+				an object, you must first enter its distinguished name. Then you can
+				specify an attribute name and value and select the desired action
+				(e.g. replacement) that will be performed in the underlying
+				subprocess.</p>
 
 			<h:form id="form">
 				<p:messages />
@@ -73,12 +80,14 @@
 							update="form" icon="ui-icon-plus" ajax="false" />
 
 						<p:commandButton id="replaceAttribute"
-							actionListener="#{logic.replaceAttribute}" value="Replace Attribute"
-							update="form" icon="ui-icon-refresh" ajax="false" />
+							actionListener="#{logic.replaceAttribute}"
+							value="Replace Attribute" update="form" icon="ui-icon-refresh"
+							ajax="false" />
 
 						<p:commandButton id="removeAttribute"
-							actionListener="#{logic.removeAttribute}" value="Remove Attribute"
-							update="form" icon="ui-icon-remove" ajax="false" />
+							actionListener="#{logic.removeAttribute}"
+							value="Remove Attribute" update="form" icon="ui-icon-cancel"
+							ajax="false" />
 					</h:panelGrid>
 				</p:panelGrid>
 
