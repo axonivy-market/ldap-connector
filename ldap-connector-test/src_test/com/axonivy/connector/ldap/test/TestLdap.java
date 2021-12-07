@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
+import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.lang3.StringUtils;
@@ -152,8 +153,7 @@ class TestLdap {
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).isEmpty();
 
-    Attributes newObject = new BasicAttributes();
-    newObject.put(new BasicAttribute("objectClass", "user"));
+    Attributes newObject = new BasicAttributes("objectClass", "user");
     writer.createObject(distinguishedName, newObject);
     queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(1);
@@ -161,6 +161,52 @@ class TestLdap {
     writer.destroyObject(distinguishedName);
     queryResult = queryExecutor.perform(query);
     assertThat(queryResult).isEmpty();
+  }
+
+  @Test
+  void modify_attributes() throws NamingException {
+    String distinguishedName = "CN=testldap,CN=Users,DC=zugtstdomain,DC=wan";
+    String mail = "ivy@zug.ch";
+    query = LdapQuery.create(query)
+            .rootObject("DC=zugtstdomain,DC=wan")
+            .filter("(distinguishedName=" + distinguishedName + ")")
+            .toLdapQuery();
+
+    Attributes newObject = new BasicAttributes("objectClass", "user");
+    writer.createObject(distinguishedName, newObject);
+    List<LdapObject> queryResult = queryExecutor.perform(query);
+    assertThat(queryResult.get(0).getAttributes())
+            .hasSizeGreaterThan(1)
+            .extracting(LdapAttribute::getName)
+            .doesNotContain("mail");
+
+    Attributes newAttribute = new BasicAttributes("mail",mail);
+    writer.modifyAttributes(distinguishedName, DirContext.ADD_ATTRIBUTE, newAttribute);
+    queryResult = queryExecutor.perform(query);
+    assertThat(queryResult.get(0).getAttributes())
+            .hasSizeGreaterThan(1)
+            .extracting(LdapAttribute::getName, LdapAttribute::getValue)
+            .contains(tuple("mail", mail));
+
+    mail = "ivy@luzern.ch";
+    newAttribute = new BasicAttributes("mail",mail);
+    writer.modifyAttributes(distinguishedName, DirContext.REPLACE_ATTRIBUTE, newAttribute);
+    queryResult = queryExecutor.perform(query);
+    assertThat(queryResult.get(0).getAttributes())
+            .hasSizeGreaterThan(1)
+            .extracting(LdapAttribute::getName, LdapAttribute::getValue)
+            .contains(tuple("mail", mail));
+
+    newAttribute = new BasicAttributes();
+    newAttribute.put(new BasicAttribute("mail"));
+    writer.modifyAttributes(distinguishedName, DirContext.REMOVE_ATTRIBUTE, newAttribute);
+    queryResult = queryExecutor.perform(query);
+    assertThat(queryResult.get(0).getAttributes())
+            .hasSizeGreaterThan(1)
+            .extracting(LdapAttribute::getName)
+            .doesNotContain("mail");
+
+    writer.destroyObject(distinguishedName);
   }
 
 }

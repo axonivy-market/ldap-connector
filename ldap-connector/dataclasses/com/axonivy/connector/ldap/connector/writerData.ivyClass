@@ -8,3 +8,5 @@ attributes javax.naming.directory.Attributes #field
 attributes PERSISTENT #fieldModifier
 action String #field
 action PERSISTENT #fieldModifier
+dirContextAction Integer #field
+dirContextAction PERSISTENT #fieldModifier

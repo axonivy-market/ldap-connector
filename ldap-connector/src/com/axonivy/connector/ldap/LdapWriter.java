@@ -47,4 +47,19 @@ public class LdapWriter {
 
   }
 
+  public void modifyAttributes(String distinguishedName, int action, Attributes attributes)
+          throws NamingException {
+    DirContext dirContext = null;
+    try {
+      dirContext = JndiUtil.openDirContext(jndiConfig);
+      dirContext.modifyAttributes(distinguishedName, action, attributes);
+    } finally {
+      if (dirContext != null) {
+        dirContext.close();
+      }
+
+    }
+
+  }
+
 }
