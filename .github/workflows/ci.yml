@@ -1,21 +1,10 @@
 name: CI-Build
 
 on:
-  workflow_call:
-    inputs:
-      mvnArgs:
-        type: string
-        required: false
-    secrets:
-      mvnArgs:
-        required: false
   push:
   schedule:
     - cron:  '21 21 * * *'
   workflow_dispatch:
-
-secrets:
-  mvnArgs: -Dactivedirectory.username=${{ secrets.ACTIVE_DIRECTORY_USERNAME }} -Dactivedirectory.password=${{ secrets.ACTIVE_DIRECTORY_PASSWORD }}
 
 jobs:
   build:
@@ -30,7 +19,7 @@ jobs:
         java-version: 11
 
     - name: Build with Maven
-      run: mvn clean verify --batch-mode ${{ inputs.mvnArgs }} ${{ secrets.mvnArgs }}
+      run: mvn clean verify --batch-mode -Dactivedirectory.username=${{ secrets.ACTIVE_DIRECTORY_USERNAME }} -Dactivedirectory.password=${{ secrets.ACTIVE_DIRECTORY_PASSWORD }}
 
     - name: Publish Unit Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
