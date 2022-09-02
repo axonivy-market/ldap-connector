@@ -14,6 +14,9 @@ on:
     - cron:  '21 21 * * *'
   workflow_dispatch:
 
+secrets:
+  mvnArgs: -Dactivedirectory.username=${{ secrets.ACTIVE_DIRECTORY_USERNAME }} -Dactivedirectory.password=${{ secrets.ACTIVE_DIRECTORY_PASSWORD }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,5 +45,3 @@ jobs:
         path: |
           */target/*.iar
           *product/target/*.zip
-    secrets:
-      mvnArgs: -Dactivedirectory.username=${{ secrets.ACTIVE_DIRECTORY_USERNAME }} -Dactivedirectory.password=${{ secrets.ACTIVE_DIRECTORY_PASSWORD }}
