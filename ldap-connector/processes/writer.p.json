@@ -1,0 +1,163 @@
+{
+  "format" : "9.4.20",
+  "id" : "17D75C0DFF198A83",
+  "data" : "com.axonivy.connector.ldap.connector.writerData",
+  "kind" : "CALLABLE_SUB",
+  "description" : "This LDAP connector allows you to create, delete and modify objects in a specific directory via LDAP.",
+  "elements" : [ {
+      "id" : "f0",
+      "type" : "CallSubStart",
+      "name" : "create(String,Attributes)",
+      "config" : {
+        "callSignature" : "create",
+        "input" : {
+          "params" : [
+            { "name" : "distinguishedName", "type" : "String", "desc" : "unique name of the new object" },
+            { "name" : "attributes", "type" : "javax.naming.directory.Attributes", "desc" : "attributes that define the new object" }
+          ],
+          "map" : {
+            "out.action" : "\"create\"",
+            "out.attributes" : "param.attributes",
+            "out.distinguishedName" : "param.distinguishedName"
+          }
+        },
+        "tags" : "connector"
+      },
+      "visual" : {
+        "at" : { "x" : 112, "y" : 104 },
+        "labelOffset" : { "x" : 72, "y" : 37 },
+        "icon" : "res:/webContent/icons/ldap.png?small"
+      },
+      "connect" : { "id" : "f6", "to" : "f9" }
+    }, {
+      "id" : "f1",
+      "type" : "CallSubEnd",
+      "visual" : {
+        "at" : { "x" : 664, "y" : 184 }
+      }
+    }, {
+      "id" : "f3",
+      "type" : "Script",
+      "name" : "write",
+      "config" : {
+        "output" : {
+          "code" : [
+            "import com.axonivy.connector.ldap.LdapWriter;",
+            "",
+            "LdapWriter writer = new LdapWriter(in.jndiConfig);",
+            "",
+            "if(in.action.equalsIgnoreCase(\"create\")){",
+            "  writer.createObject(in.distinguishedName, in.attributes);",
+            "}",
+            "else if(in.action.equalsIgnoreCase(\"delete\")){",
+            "  writer.destroyObject(in.distinguishedName);",
+            "}",
+            "else if(in.action.equalsIgnoreCase(\"modify\")){",
+            "  writer.modifyAttributes(in.distinguishedName, in.dirContextAction, in.attributes);",
+            "}"
+          ]
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 504, "y" : 184 },
+        "icon" : "res:/webContent/icons/ldap.png"
+      },
+      "connect" : { "id" : "f2", "to" : "f1" }
+    }, {
+      "id" : "f5",
+      "type" : "CallSubStart",
+      "name" : "delete(String)",
+      "config" : {
+        "callSignature" : "delete",
+        "input" : {
+          "params" : [
+            { "name" : "distinguishedName", "type" : "String", "desc" : "unique name of the object to be deleted" }
+          ],
+          "map" : {
+            "out.action" : "\"delete\"",
+            "out.distinguishedName" : "param.distinguishedName"
+          }
+        },
+        "tags" : "connector"
+      },
+      "visual" : {
+        "at" : { "x" : 112, "y" : 184 },
+        "labelOffset" : { "x" : 38, "y" : 37 },
+        "icon" : "res:/webContent/icons/ldap.png?small"
+      },
+      "connect" : { "id" : "f4", "to" : "f9" }
+    }, {
+      "id" : "f9",
+      "type" : "SubProcessCall",
+      "name" : "setupConfig",
+      "config" : {
+        "processCall" : "setupConfig:call()",
+        "output" : {
+          "map" : {
+            "out" : "in",
+            "out.jndiConfig" : "result.jndiConfig"
+          }
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 312, "y" : 184 }
+      },
+      "connect" : { "id" : "f11", "to" : "f3" }
+    }, {
+      "id" : "f7",
+      "type" : "CallSubStart",
+      "name" : "modify(String,Attributes,Integer)",
+      "config" : {
+        "callSignature" : "modify",
+        "input" : {
+          "params" : [
+            { "name" : "distinguishedName", "type" : "String", "desc" : "unique name of the object to be modified" },
+            { "name" : "attributes", "type" : "javax.naming.directory.Attributes", "desc" : "attributes used for the modification" },
+            { "name" : "dirContextAction", "type" : "Integer", "desc" : "defines the action, i.e. add, replace or remove" }
+          ],
+          "map" : {
+            "out.action" : "\"modify\"",
+            "out.attributes" : "param.attributes",
+            "out.dirContextAction" : "param.dirContextAction",
+            "out.distinguishedName" : "param.distinguishedName"
+          }
+        },
+        "tags" : "connector"
+      },
+      "visual" : {
+        "at" : { "x" : 112, "y" : 264 },
+        "labelOffset" : { "x" : 96, "y" : 37 },
+        "icon" : "res:/webContent/icons/ldap.png?small"
+      },
+      "connect" : { "id" : "f8", "to" : "f9" }
+    }, {
+      "id" : "f10",
+      "type" : "CallSubStart",
+      "name" : "modify(String,Attributes,Integer,JndiConfig)",
+      "config" : {
+        "callSignature" : "modify",
+        "input" : {
+          "params" : [
+            { "name" : "distinguishedName", "type" : "String", "desc" : "unique name of the object to be modified" },
+            { "name" : "attributes", "type" : "javax.naming.directory.Attributes", "desc" : "attributes used for the modification" },
+            { "name" : "dirContextAction", "type" : "Integer", "desc" : "defines the action, i.e. add, replace or remove" },
+            { "name" : "jndiConfig", "type" : "com.axonivy.connector.ldap.util.JndiConfig", "desc" : "configuration used for LDAP connection" }
+          ],
+          "map" : {
+            "out.action" : "\"modify\"",
+            "out.attributes" : "param.attributes",
+            "out.dirContextAction" : "param.dirContextAction",
+            "out.distinguishedName" : "param.distinguishedName",
+            "out.jndiConfig" : "param.jndiConfig"
+          }
+        },
+        "tags" : "connector"
+      },
+      "visual" : {
+        "at" : { "x" : 112, "y" : 368 },
+        "labelOffset" : { "x" : 128, "y" : 37 },
+        "icon" : "res:/webContent/icons/ldap.png?small"
+      },
+      "connect" : { "id" : "f12", "to" : "f3" }
+    } ]
+}
