@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axonivy.connector.ldap</groupId>
   <artifactId>ldap-connector-test</artifactId>
@@ -21,9 +22,19 @@
   </dependencies>
   <build>
     <testSourceDirectory>src_test</testSourceDirectory>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.0.0-M1</version>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M5</version>
         <configuration>
@@ -36,20 +47,9 @@
       <plugin>
         <groupId>com.axonivy.ivy.ci</groupId>
         <artifactId>project-build-plugin</artifactId>
-        <version>9.3.1</version>
+        <version>9.4.1</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>3.0.0-M1</version>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 </project>
