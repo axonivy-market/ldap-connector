@@ -1,8 +1,10 @@
 {
-  "format" : "9.4.20",
+  "format" : "10.0.0",
   "id" : "17D6ADD32E68D727",
-  "data" : "com.axonivy.connector.ldap.connector.demo.query.queryData",
   "kind" : "HTML_DIALOG",
+  "config" : {
+    "data" : "com.axonivy.connector.ldap.connector.demo.query.queryData"
+  },
   "elements" : [ {
       "id" : "f0",
       "type" : "HtmlDialogStart",

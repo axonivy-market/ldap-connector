@@ -1,7 +1,9 @@
 {
-  "format" : "9.4.20",
+  "format" : "10.0.0",
   "id" : "17D5C57927DF02FE",
-  "data" : "com.axonivy.connector.ldap.connector.demo.Data",
+  "config" : {
+    "data" : "com.axonivy.connector.ldap.connector.demo.Data"
+  },
   "elements" : [ {
       "id" : "f0",
       "type" : "RequestStart",
