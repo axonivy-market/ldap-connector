@@ -1,9 +1,11 @@
 {
-  "format" : "9.4.20",
+  "format" : "10.0.0",
   "id" : "17D75C0DFF198A83",
-  "data" : "com.axonivy.connector.ldap.connector.writerData",
   "kind" : "CALLABLE_SUB",
   "description" : "This LDAP connector allows you to create, delete and modify objects in a specific directory via LDAP.",
+  "config" : {
+    "data" : "com.axonivy.connector.ldap.connector.writerData"
+  },
   "elements" : [ {
       "id" : "f0",
       "type" : "CallSubStart",
