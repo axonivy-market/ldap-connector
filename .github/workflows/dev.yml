@@ -1,0 +1,13 @@
+name: Dev-Build
+
+on:
+  push:
+  schedule:
+    - cron:  '21 21 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: axonivy-market/github-workflows/.github/workflows/dev.yml@v2
+    secrets:
+      mvnArgs: -Dactivedirectory.username=${{ secrets.ACTIVE_DIRECTORY_USERNAME }} -Dactivedirectory.password=${{ secrets.ACTIVE_DIRECTORY_PASSWORD }}
