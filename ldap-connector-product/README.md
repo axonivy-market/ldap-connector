@@ -5,7 +5,7 @@ Axon Ivy's **Active Directory** connector helps you accelerate process automatio
 - Gives you the possibility to modify attributes of Active Directory objects
 - Enables the creation and addition of new Active Directory entries
 - Lets you delete Active Directory objects
-- Supports you with an easy-to-copy demo implementation to reduce your integration effort.
+- Supports you with a demo implementation to reduce your integration effort.
 
 ## Demo
 ### Query Demo
