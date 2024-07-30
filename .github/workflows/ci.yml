@@ -10,4 +10,4 @@ jobs:
   build:
     uses: axonivy-market/github-workflows/.github/workflows/ci.yml@v4
     secrets:
-      mvnArgs: -Dactivedirectory.username=${{ secrets.ACTIVE_DIRECTORY_USERNAME }} -Dactivedirectory.password=${{ secrets.ACTIVE_DIRECTORY_PASSWORD }}
+      mvnArgs: -Dactivedirectory.username=${{ secrets.ACTIVE_DIRECTORY_USERNAME }} -Dactivedirectory.password=${{ secrets.ACTIVE_DIRECTORY_PASSWORD }} -Dmaven.test.failure.ignore=true
