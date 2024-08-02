@@ -41,12 +41,12 @@
             "import com.axonivy.connector.ldap.util.JndiConfig;",
             "",
             "in.jndiConfig = JndiConfig.create()",
-            "            .provider(ivy.var.LdapConnector_Provider)",
-            "            .url(ivy.var.LdapConnector_Url)",
-            "            .userName(ivy.var.LdapConnector_Username)",
-            "            .password(ivy.var.LdapConnector_Password)",
-            "            .referral(ivy.var.LdapConnector_Referral)",
-            "            .connectionTimeout(ivy.var.LdapConnector_Connection_Timeout)",
+            "            .provider(ivy.var.get(\"LdapConnector.Provider\")",
+            "            .url(ivy.var.get(\"LdapConnector.Url\")",
+            "            .userName(ivy.var.get(\"LdapConnector.Username\")",
+            "            .password(ivy.var.get(\"LdapConnector.Password\")",
+            "            .referral(ivy.var.get(\"LdapConnector.Referral\")",
+            "            .connectionTimeout(ivy.var.get(\"LdapConnector.Connection.Timeout\")",
             "            .toJndiConfig();"
           ]
         }
