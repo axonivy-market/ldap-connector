@@ -1,5 +1,5 @@
 {
-  "format" : "10.0.0",
+  "$schema" : "https://json-schema.axonivy.com/process/11.3.0/process.json",
   "id" : "17D5C57927DF02FE",
   "config" : {
     "data" : "com.axonivy.connector.ldap.connector.demo.Data"
@@ -9,15 +9,18 @@
       "type" : "RequestStart",
       "name" : "ldapQuery.ivp",
       "config" : {
-        "callSignature" : "ldapQuery",
-        "outLink" : "ldapQuery.ivp",
-        "tags" : "demo"
+        "signature" : "ldapQuery"
       },
+      "tags" : [
+        "demo"
+      ],
       "visual" : {
         "at" : { "x" : 112, "y" : 184 },
         "labelOffset" : { "x" : 29, "y" : 37 }
       },
-      "connect" : { "id" : "f2", "to" : "f4" }
+      "connect" : [
+        { "id" : "f2", "to" : "f4" }
+      ]
     }, {
       "id" : "f1",
       "type" : "TaskEnd",
@@ -29,13 +32,14 @@
       "type" : "DialogCall",
       "name" : "query",
       "config" : {
-        "dialogId" : "com.axonivy.connector.ldap.connector.demo.query",
-        "startMethod" : "start()"
+        "dialog" : "com.axonivy.connector.ldap.connector.demo.query:start()"
       },
       "visual" : {
         "at" : { "x" : 240, "y" : 184 }
       },
-      "connect" : { "id" : "f5", "to" : "f1" }
+      "connect" : [
+        { "id" : "f5", "to" : "f1" }
+      ]
     }, {
       "id" : "f3",
       "type" : "ProcessAnnotation",
@@ -55,13 +59,14 @@
       "type" : "DialogCall",
       "name" : "modify",
       "config" : {
-        "dialogId" : "com.axonivy.connector.ldap.connector.demo.modify",
-        "startMethod" : "start()"
+        "dialog" : "com.axonivy.connector.ldap.connector.demo.modify:start()"
       },
       "visual" : {
         "at" : { "x" : 248, "y" : 472 }
       },
-      "connect" : { "id" : "f11", "to" : "f8" }
+      "connect" : [
+        { "id" : "f11", "to" : "f8" }
+      ]
     }, {
       "id" : "f7",
       "type" : "ProcessAnnotation",
@@ -89,14 +94,17 @@
       "type" : "RequestStart",
       "name" : "ldapModify.ivp",
       "config" : {
-        "callSignature" : "ldapModify",
-        "outLink" : "ldapModify.ivp",
-        "tags" : "demo"
+        "signature" : "ldapModify"
       },
+      "tags" : [
+        "demo"
+      ],
       "visual" : {
         "at" : { "x" : 120, "y" : 472 },
         "labelOffset" : { "x" : 30, "y" : 37 }
       },
-      "connect" : { "id" : "f10", "to" : "f6" }
+      "connect" : [
+        { "id" : "f10", "to" : "f6" }
+      ]
     } ]
 }
