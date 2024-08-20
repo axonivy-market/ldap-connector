@@ -18,6 +18,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
+import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
 import com.axonivy.connector.ldap.LdapAttribute;
 import com.axonivy.connector.ldap.LdapObject;
@@ -31,12 +35,13 @@ import ch.ivyteam.ivy.environment.IvyTest;
 
 @IvyTest
 class TestLdap {
+  private static final DockerImageName LDAP_IMAGE = DockerImageName.parse("osixia/openldap:1.5.0");
   private static JndiConfig config;
   private static LdapQueryExecutor queryExecutor;
   private static LdapWriter writer;
   private static String password;
   private static String username;
-
+  private static GenericContainer<?> ldapContainer;
   private SearchControls searchcontrol;
   private LdapQuery query;
 
@@ -65,6 +70,21 @@ class TestLdap {
             .toJndiConfig();
     queryExecutor = new LdapQueryExecutor(config);
     writer = new LdapWriter(config);
+    
+    // Start test LDAP docker container
+    ldapContainer = new GenericContainer<>(LDAP_IMAGE)
+            .withNetwork(Network.newNetwork())
+            .withNetworkAliases("ldap")
+            .withExposedPorts(389, 636)
+            .withEnv("LDAP_ORGANISATION", "Octopus")
+            .withEnv("LDAP_DOMAIN", "com.axonivy")
+            .withEnv("LDAP_ADMIN_PASSWORD", config.getPassword())
+            .withEnv("LDAP_CONFIG_PASSWORD", config.getPassword())
+            .waitingFor(new HttpWaitStrategy()
+                    .forPort(389)
+                    .forStatusCode(200));
+
+    ldapContainer.start();
   }
 
   @BeforeEach
