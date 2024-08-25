@@ -168,7 +168,7 @@ class TestLdap {
     String distinguishedName = "CN=testldap,CN=Users,DC=zugtstdomain,DC=wan";
     query = LdapQuery.create(query)
             .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(distinguishedName=" + distinguishedName + ")")
+            .filter("(cn=testldap)")
             .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).isEmpty();
@@ -189,7 +189,7 @@ class TestLdap {
     String mail = "ivy@zug.ch";
     query = LdapQuery.create(query)
             .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(distinguishedName=" + distinguishedName + ")")
+            .filter("(cn=testldap)")
             .toLdapQuery();
 
     Attributes newObject = new BasicAttributes("objectClass", "user");
