@@ -3,7 +3,9 @@ package com.axonivy.connector.ldap.test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 
@@ -15,13 +17,18 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import com.axonivy.connector.ldap.LdapAttribute;
 import com.axonivy.connector.ldap.LdapObject;
@@ -29,13 +36,17 @@ import com.axonivy.connector.ldap.LdapQuery;
 import com.axonivy.connector.ldap.LdapQueryExecutor;
 import com.axonivy.connector.ldap.LdapWriter;
 import com.axonivy.connector.ldap.util.JndiConfig;
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.HostConfig;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
 
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.environment.IvyTest;
 
 @IvyTest
 class TestLdap {
-  private static final DockerImageName LDAP_IMAGE = DockerImageName.parse("osixia/openldap:1.5.0");
+  private static final DockerImageName LDAP_IMAGE = DockerImageName.parse("bitnami/openldap:latest");
   private static JndiConfig config;
   private static LdapQueryExecutor queryExecutor;
   private static LdapWriter writer;
@@ -70,21 +81,33 @@ class TestLdap {
             .toJndiConfig();
     queryExecutor = new LdapQueryExecutor(config);
     writer = new LdapWriter(config);
-    
-    // Start test LDAP docker container
-    ldapContainer = new GenericContainer<>(LDAP_IMAGE)
-            .withNetwork(Network.newNetwork())
-            .withNetworkAliases("ldap")
-            .withExposedPorts(389, 636)
-            .withEnv("LDAP_ORGANISATION", "Octopus")
-            .withEnv("LDAP_DOMAIN", "com.axonivy")
-            .withEnv("LDAP_ADMIN_PASSWORD", config.getPassword())
-            .withEnv("LDAP_CONFIG_PASSWORD", config.getPassword())
-            .waitingFor(new HttpWaitStrategy()
-                    .forPort(389)
-                    .forStatusCode(200));
+    Network network = Network.newNetwork();
+//     Start test LDAP docker container
+    		ldapContainer = new GenericContainer<>(LDAP_IMAGE)
+    		.withNetwork(network)
+            .withNetworkAliases("octopus_ldap")
+            .withExposedPorts(1389)
+            .withCreateContainerCmdModifier(cmd -> cmd.withNetworkMode(network.getId()).withHostConfig(
+                    new HostConfig()
+                    .withPortBindings(new PortBinding(Ports.Binding.bindPort(1389), new ExposedPort(1389)))))
+            .withEnv("LDAP_ROOT", "dc=zugtstdomain,dc=wan")
+            .withEnv("LDAP_ADMIN_USERNAME", username)
+            .withEnv("LDAP_ADMIN_PASSWORD", password)
+            .withEnv("LDAP_EXTRA_SCHEMAS", "cosine,inetorgperson,nis,octopus")
+            .withEnv("LDAP_USER_DC", "octopus-users")
+            .withCopyFileToContainer(MountableFile.forHostPath("docker/ldifs"),
+            "/ldifs")
+            .withCopyFileToContainer(
+                    MountableFile.forHostPath("docker/schema/octopus.ldif"),
+                    "/opt/bitnami/openldap/etc/schema/octopus.ldif"
+                )
+            .waitingFor(Wait.forListeningPorts(1389));
+    		ldapContainer.start();
+  }
 
-    ldapContainer.start();
+  @AfterAll
+  static void clearTestContainer() {
+    ldapContainer.close();
   }
 
   @BeforeEach
