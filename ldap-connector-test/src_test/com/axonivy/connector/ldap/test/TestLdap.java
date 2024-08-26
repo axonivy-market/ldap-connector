@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
@@ -83,26 +86,31 @@ class TestLdap {
     writer = new LdapWriter(config);
     Network network = Network.newNetwork();
 //     Start test LDAP docker container
-    		ldapContainer = new GenericContainer<>(LDAP_IMAGE)
-    		.withNetwork(network)
-            .withNetworkAliases("octopus_ldap")
-            .withExposedPorts(1389)
-            .withCreateContainerCmdModifier(cmd -> cmd.withNetworkMode(network.getId()).withHostConfig(
-                    new HostConfig()
-                    .withPortBindings(new PortBinding(Ports.Binding.bindPort(1389), new ExposedPort(1389)))))
-            .withEnv("LDAP_ROOT", "dc=zugtstdomain,dc=wan")
-            .withEnv("LDAP_ADMIN_USERNAME", username)
-            .withEnv("LDAP_ADMIN_PASSWORD", password)
-            .withEnv("LDAP_EXTRA_SCHEMAS", "cosine,inetorgperson,nis,octopus")
-            .withEnv("LDAP_USER_DC", "octopus-users")
-            .withCopyFileToContainer(MountableFile.forHostPath("docker/ldifs"),
-            "/ldifs")
-            .withCopyFileToContainer(
-                    MountableFile.forHostPath("docker/schema/octopus.ldif"),
-                    "/opt/bitnami/openldap/etc/schema/octopus.ldif"
-                )
-            .waitingFor(Wait.forListeningPorts(1389));
-    		ldapContainer.start();
+    ldapContainer = new GenericContainer<>(LDAP_IMAGE)
+      .withNetwork(network)
+      .withNetworkAliases("octopus_ldap")
+      .withExposedPorts(1389)
+      .withCreateContainerCmdModifier(cmd -> cmd.withNetworkMode(network.getId()).withHostConfig(
+        new HostConfig()
+        .withPortBindings(new PortBinding(Ports.Binding.bindPort(1389), new ExposedPort(1389)))))
+      .withEnv("LDAP_ROOT", "dc=zugtstdomain,dc=wan")
+      .withEnv("LDAP_ADMIN_USERNAME", username)
+      .withEnv("LDAP_ADMIN_PASSWORD", password)
+      .withEnv("LDAP_EXTRA_SCHEMAS", "cosine,inetorgperson,nis,octopus")
+      .withEnv("LDAP_USER_DC", "octopus-users")
+      .withCopyFileToContainer(
+        MountableFile.forHostPath("docker/octopus.ldif"),
+        "/opt/bitnami/openldap/etc/schema/octopus.ldif")
+      .withCopyFileToContainer(MountableFile.forHostPath("docker/ldifs/data.ldif"),
+        "/ldifs/data.ldif")
+      .waitingFor(Wait.forListeningPort());
+    ldapContainer.start();
+    try {
+      Thread.sleep(10000);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   @AfterAll

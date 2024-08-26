@@ -1,5 +1,5 @@
 # == Variables ==
-# 
+#
 # You can define here your project Variables.
 # If you want to define/override a Variable for a specific Environment, 
 # add an additional ‘variables.yaml’ file in a subdirectory in the ‘Config’ folder: 
@@ -7,4 +7,7 @@
 #
 Variables:
   LdapConnector:
-    Url: "ldap://159.100.249.76:389"
+    Url: ldap://localhost:1389
+    Provider: com.sun.jndi.ldap.LdapCtxFactory
+    Referal: follow
+    " Connection.Timeout": "1000"
