@@ -148,7 +148,7 @@ class TestLdap {
             .rootObject("DC=zugtstdomain,DC=wan")
             .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
             .searchControl(searchcontrol)
-        .toLdapQuery();
+            .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes()).hasSize(1);
   }
