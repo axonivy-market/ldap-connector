@@ -68,16 +68,18 @@ class TestLdap {
         }
       }
     }
-    config = JndiConfig.create().password(password).url(Ivy.var().get("LdapConnector.Url"))
-        .userName("cn=" + username + "," + DOMAIN_COMPONENT)
-        .connectionTimeout(Ivy.var().get("LdapConnector.Connection.Timeout"))
-        .provider(Ivy.var().get("LdapConnector.Provider")).referral(Ivy.var().get("LdapConnector.Referral"))
-        .toJndiConfig();
+    config = JndiConfig.create()
+            .password(password).url(Ivy.var().get("LdapConnector.Url"))
+            .userName("cn=" + username + "," + DOMAIN_COMPONENT)
+            .connectionTimeout(Ivy.var().get("LdapConnector.Connection.Timeout"))
+            .provider(Ivy.var().get("LdapConnector.Provider"))
+            .referral(Ivy.var().get("LdapConnector.Referral"))
+            .toJndiConfig();
     queryExecutor = new LdapQueryExecutor(config);
     writer = new LdapWriter(config);
+    
+// Setup docker for testing
     Network network = Network.newNetwork();
-
-//     Start test LDAP docker container
     ldapContainer = new GenericContainer<>(LDAP_IMAGE).withNetwork(network).withNetworkAliases("octopus_ldap")
         .withExposedPorts(1389)
         .withCreateContainerCmdModifier(
@@ -104,27 +106,37 @@ class TestLdap {
     searchcontrol = new SearchControls();
     searchcontrol.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
-    query = LdapQuery.create().searchControl(searchcontrol).toLdapQuery();
+    query = LdapQuery.create()
+            .searchControl(searchcontrol)
+            .toLdapQuery();
   }
 
   @Test
   void person_query() throws Exception {
-    query = LdapQuery.create(query).rootObject("CN=Users,DC=zugtstdomain,DC=wan").filter("(objectClass=person)")
-        .toLdapQuery();
+    query = LdapQuery.create(query)
+            .rootObject("CN=Users,DC=zugtstdomain,DC=wan")
+            .filter("(objectClass=person)")
+            .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSizeGreaterThanOrEqualTo(2);
   }
 
   @Test
   void group_query() throws Exception {
-    query = LdapQuery.create(query).rootObject("DC=zugtstdomain,DC=wan").filter("(objectClass=group)").toLdapQuery();
+    query = LdapQuery.create(query)
+            .rootObject("DC=zugtstdomain,DC=wan")
+            .filter("(objectClass=group)")
+            .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSizeGreaterThan(0);
   }
 
   @Test
   void empty_result() throws Exception {
-    query = LdapQuery.create(query).rootObject("DC=zugtstdomain,DC=wan").filter("(objectClass=group1xy)").toLdapQuery();
+    query = LdapQuery.create(query)
+            .rootObject("DC=zugtstdomain,DC=wan")
+            .filter("(objectClass=group1xy)")
+            .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(0);
   }
@@ -132,8 +144,10 @@ class TestLdap {
   @Test
   void select_single_attribute() throws Exception {
     searchcontrol.setReturningAttributes(new String[] { "name" });
-    query = LdapQuery.create(query).rootObject("DC=zugtstdomain,DC=wan")
-        .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)").searchControl(searchcontrol)
+    query = LdapQuery.create(query)
+            .rootObject("DC=zugtstdomain,DC=wan")
+            .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
+            .searchControl(searchcontrol)
         .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes()).hasSize(1);
@@ -141,26 +155,34 @@ class TestLdap {
 
   @Test
   void select_all_attributes() throws Exception {
-    query = LdapQuery.create(query).rootObject("DC=zugtstdomain,DC=wan")
-        .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)").toLdapQuery();
+    query = LdapQuery.create(query)
+            .rootObject("DC=zugtstdomain,DC=wan")
+            .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
+            .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes()).hasSizeGreaterThan(1);
   }
 
   @Test
   void check_attribute_value() throws Exception {
-    query = LdapQuery.create(query).rootObject("DC=zugtstdomain,DC=wan")
-        .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)").toLdapQuery();
+    query = LdapQuery.create(query)
+            .rootObject("DC=zugtstdomain,DC=wan")
+            .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
+            .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(1);
-    assertThat(queryResult.get(0).getAttributes()).hasSizeGreaterThan(1)
-        .extracting(LdapAttribute::getName, LdapAttribute::getValue).contains(tuple("cn", "Users"));
+    assertThat(queryResult.get(0).getAttributes())
+            .hasSizeGreaterThan(1)
+            .extracting(LdapAttribute::getName, LdapAttribute::getValue)
+            .contains(tuple("cn", "Users"));
   }
 
   @Test
   void create_and_destroy_user() throws NamingException {
     String distinguishedName = "CN=testldap,CN=Users,DC=zugtstdomain,DC=wan";
-    query = LdapQuery.create(query).rootObject("DC=zugtstdomain,DC=wan").filter("(cn=testldap)").toLdapQuery();
+    query = LdapQuery.create(query)
+            .rootObject("DC=zugtstdomain,DC=wan")
+            .filter("(cn=testldap)").toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).isEmpty();
 
@@ -178,33 +200,44 @@ class TestLdap {
   void modify_attributes() throws NamingException {
     String distinguishedName = "CN=testldap,CN=Users,DC=zugtstdomain,DC=wan";
     String mail = "ivy@zug.ch";
-    query = LdapQuery.create(query).rootObject("DC=zugtstdomain,DC=wan").filter("(cn=testldap)").toLdapQuery();
+    query = LdapQuery.create(query)
+            .rootObject("DC=zugtstdomain,DC=wan")
+            .filter("(cn=testldap)")
+            .toLdapQuery();
 
     Attributes newObject = new BasicAttributes("objectClass", "user");
     writer.createObject(distinguishedName, newObject);
     List<LdapObject> queryResult = queryExecutor.perform(query);
-    assertThat(queryResult.get(0).getAttributes()).hasSizeGreaterThan(1).extracting(LdapAttribute::getName)
-        .doesNotContain("mail");
+    assertThat(queryResult.get(0).getAttributes())
+            .hasSizeGreaterThan(1)
+            .extracting(LdapAttribute::getName)
+            .doesNotContain("mail");
 
     Attributes newAttribute = new BasicAttributes("mail", mail);
     writer.modifyAttributes(distinguishedName, DirContext.ADD_ATTRIBUTE, newAttribute);
     queryResult = queryExecutor.perform(query);
-    assertThat(queryResult.get(0).getAttributes()).hasSizeGreaterThan(1)
-        .extracting(LdapAttribute::getName, LdapAttribute::getValue).contains(tuple("mail", mail));
+    assertThat(queryResult.get(0).getAttributes())
+            .hasSizeGreaterThan(1)
+            .extracting(LdapAttribute::getName, LdapAttribute::getValue)
+            .contains(tuple("mail", mail));
 
     mail = "ivy@luzern.ch";
     newAttribute = new BasicAttributes("mail", mail);
     writer.modifyAttributes(distinguishedName, DirContext.REPLACE_ATTRIBUTE, newAttribute);
     queryResult = queryExecutor.perform(query);
-    assertThat(queryResult.get(0).getAttributes()).hasSizeGreaterThan(1)
-        .extracting(LdapAttribute::getName, LdapAttribute::getValue).contains(tuple("mail", mail));
+    assertThat(queryResult.get(0).getAttributes())
+            .hasSizeGreaterThan(1)
+            .extracting(LdapAttribute::getName, LdapAttribute::getValue)
+            .contains(tuple("mail", mail));
 
     newAttribute = new BasicAttributes();
     newAttribute.put(new BasicAttribute("mail"));
     writer.modifyAttributes(distinguishedName, DirContext.REMOVE_ATTRIBUTE, newAttribute);
     queryResult = queryExecutor.perform(query);
-    assertThat(queryResult.get(0).getAttributes()).hasSizeGreaterThan(1).extracting(LdapAttribute::getName)
-        .doesNotContain("mail");
+    assertThat(queryResult.get(0).getAttributes())
+            .hasSizeGreaterThan(1)
+            .extracting(LdapAttribute::getName)
+            .doesNotContain("mail");
 
     writer.destroyObject(distinguishedName);
   }
