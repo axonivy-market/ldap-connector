@@ -12,8 +12,6 @@ import javax.naming.directory.SearchResult;
 import com.axonivy.connector.ldap.util.JndiConfig;
 import com.axonivy.connector.ldap.util.JndiUtil;
 
-import ch.ivyteam.ivy.environment.Ivy;
-
 public class LdapQueryExecutor {
 
   private JndiConfig jndiConfig;
@@ -28,16 +26,6 @@ public class LdapQueryExecutor {
 
   public List<LdapObject> perform(LdapQuery ldapQuery)
           throws NamingException {
-    Ivy.log().warn(jndiConfig.getPassword());
-    Ivy.log().warn(jndiConfig.getUrl());
-    Ivy.log().warn(jndiConfig.getUserName());
-    Ivy.log().warn(jndiConfig.getReferral());
-    Ivy.log().warn(jndiConfig.getProvider());
-    Ivy.log().warn(ldapQuery.getRootObject());
-    Ivy.log().warn(ldapQuery.getFilter());
-    Ivy.log().warn(ldapQuery.getSearchControl().getSearchScope());
-
-
     DirContext dirContext = null;
     NamingEnumeration<SearchResult> searchResults = null;
     List<LdapObject> ldapObjectList;

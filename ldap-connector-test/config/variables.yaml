@@ -10,4 +10,4 @@ Variables:
     Url: ldap://localhost:1389
     Provider: com.sun.jndi.ldap.LdapCtxFactory
     Referal: follow
-    " Connection.Timeout": "1000"
+    Connection.Timeout: "1000"
