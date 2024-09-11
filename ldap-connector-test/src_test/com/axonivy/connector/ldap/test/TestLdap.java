@@ -53,6 +53,7 @@ class TestLdap {
   private SearchControls searchcontrol;
   private LdapQuery query;
 
+  @SuppressWarnings("resource")
   @BeforeAll
   static void setupConfig() throws IOException {
     username = System.getProperty("adUsername");
@@ -78,7 +79,7 @@ class TestLdap {
     queryExecutor = new LdapQueryExecutor(config);
     writer = new LdapWriter(config);
     
-// Setup docker for testing
+    // Setup docker for testing
     Network network = Network.newNetwork();
     ldapContainer = new GenericContainer<>(LDAP_IMAGE).withNetwork(network).withNetworkAliases("octopus_ldap")
         .withExposedPorts(1389)
@@ -143,7 +144,7 @@ class TestLdap {
 
   @Test
   void select_single_attribute() throws Exception {
-    searchcontrol.setReturningAttributes(new String[] { "name" });
+    searchcontrol.setReturningAttributes(new String[] {"name"});
     query = LdapQuery.create(query)
             .rootObject("DC=zugtstdomain,DC=wan")
             .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
