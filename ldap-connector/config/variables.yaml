@@ -10,5 +10,6 @@ Variables:
     Password: ""
     # Determines how referrals are handled by the service provider. Possible values are "follow", "ignore" or "throw".
     Referral: "follow"
+    Connection:
     # Timeout for Ldap operations
-    Connection.Timeout: "1000"
+      Timeout: "1000"
