@@ -1,5 +1,5 @@
 {
-  "format" : "10.0.0",
+  "$schema" : "https://json-schema.axonivy.com/process/11.3.0/process.json",
   "id" : "17D93EE3606C95F6",
   "kind" : "HTML_DIALOG",
   "config" : {
@@ -10,7 +10,7 @@
       "type" : "HtmlDialogStart",
       "name" : "start()",
       "config" : {
-        "callSignature" : "start",
+        "signature" : "start",
         "input" : {
           "map" : {
             "out.password" : "ivy.var.LdapConnector_Password",
@@ -25,7 +25,9 @@
         "at" : { "x" : 96, "y" : 64 },
         "labelOffset" : { "x" : 12, "y" : 35 }
       },
-      "connect" : { "id" : "f2", "to" : "f1" }
+      "connect" : [
+        { "id" : "f2", "to" : "f1" }
+      ]
     }, {
       "id" : "f1",
       "type" : "HtmlDialogEnd",
@@ -43,7 +45,9 @@
         "at" : { "x" : 96, "y" : 160 },
         "labelOffset" : { "x" : 9, "y" : 35 }
       },
-      "connect" : { "id" : "f5", "to" : "f4" }
+      "connect" : [
+        { "id" : "f5", "to" : "f4" }
+      ]
     }, {
       "id" : "f4",
       "type" : "HtmlDialogExit",
@@ -61,7 +65,9 @@
         "at" : { "x" : 96, "y" : 232 },
         "labelOffset" : { "x" : 12, "y" : 35 }
       },
-      "connect" : { "id" : "f7", "to" : "f13" }
+      "connect" : [
+        { "id" : "f7", "to" : "f13" }
+      ]
     }, {
       "id" : "f9",
       "type" : "HtmlDialogEnd",
@@ -84,17 +90,17 @@
       "visual" : {
         "at" : { "x" : 336, "y" : 344 }
       },
-      "connect" : { "id" : "f14", "to" : "f9" }
+      "connect" : [
+        { "id" : "f14", "to" : "f9" }
+      ]
     }, {
       "id" : "f13",
       "type" : "SubProcessCall",
       "name" : "process query",
       "config" : {
+        "processCall" : "query:call(com.axonivy.connector.ldap.LdapQuery,com.axonivy.connector.ldap.util.JndiConfig)",
         "call" : {
-          "params" : [
-            { "name" : "ldapQuery", "type" : "com.axonivy.connector.ldap.LdapQuery" },
-            { "name" : "jndiConfig", "type" : "com.axonivy.connector.ldap.util.JndiConfig" }
-          ],
+          "map" : { },
           "code" : [
             "import javax.naming.directory.SearchControls;",
             "import com.axonivy.connector.ldap.LdapQuery;",
@@ -119,7 +125,6 @@
             "            .toLdapQuery();"
           ]
         },
-        "processCall" : "query:call(com.axonivy.connector.ldap.LdapQuery,com.axonivy.connector.ldap.util.JndiConfig)",
         "output" : {
           "map" : {
             "out" : "in",
@@ -146,9 +151,13 @@
           "visual" : {
             "at" : { "x" : 280, "y" : 264 }
           },
-          "connect" : { "id" : "f16", "to" : "f12" }
+          "connect" : [
+            { "id" : "f16", "to" : "f12" }
+          ]
         } ],
-      "connect" : { "id" : "f17", "to" : "f9" }
+      "connect" : [
+        { "id" : "f17", "to" : "f9" }
+      ]
     }, {
       "id" : "f8",
       "type" : "HtmlDialogEventStart",
@@ -166,7 +175,9 @@
         "at" : { "x" : 96, "y" : 352 },
         "labelOffset" : { "x" : 15, "y" : 35 }
       },
-      "connect" : { "id" : "f25", "to" : "f24" }
+      "connect" : [
+        { "id" : "f25", "to" : "f24" }
+      ]
     }, {
       "id" : "f18",
       "type" : "HtmlDialogEventStart",
@@ -184,7 +195,9 @@
         "at" : { "x" : 96, "y" : 416 },
         "labelOffset" : { "x" : 17, "y" : 35 }
       },
-      "connect" : { "id" : "f15", "to" : "f24" }
+      "connect" : [
+        { "id" : "f15", "to" : "f24" }
+      ]
     }, {
       "id" : "f21",
       "type" : "HtmlDialogEventStart",
@@ -202,19 +215,16 @@
         "at" : { "x" : 96, "y" : 488 },
         "labelOffset" : { "x" : 16, "y" : 35 }
       },
-      "connect" : { "id" : "f22", "to" : "f24" }
+      "connect" : [
+        { "id" : "f22", "to" : "f24" }
+      ]
     }, {
       "id" : "f24",
       "type" : "SubProcessCall",
       "name" : "writer",
       "config" : {
+        "processCall" : "writer:modify(String,javax.naming.directory.Attributes,Integer,com.axonivy.connector.ldap.util.JndiConfig)",
         "call" : {
-          "params" : [
-            { "name" : "distinguishedName", "type" : "String" },
-            { "name" : "attributes", "type" : "javax.naming.directory.Attributes" },
-            { "name" : "dirContextAction", "type" : "Integer" },
-            { "name" : "jndiConfig", "type" : "com.axonivy.connector.ldap.util.JndiConfig" }
-          ],
           "map" : {
             "param.distinguishedName" : "in.distinguishedName"
           },
@@ -245,8 +255,7 @@
             "  param.attributes = new BasicAttributes(in.attributeName,in.attributeValue);",
             "}"
           ]
-        },
-        "processCall" : "writer:modify(String,javax.naming.directory.Attributes,Integer,com.axonivy.connector.ldap.util.JndiConfig)"
+        }
       },
       "visual" : {
         "at" : { "x" : 248, "y" : 416 }
@@ -267,8 +276,12 @@
           "visual" : {
             "at" : { "x" : 280, "y" : 448 }
           },
-          "connect" : { "id" : "f20", "to" : "f12", "via" : [ { "x" : 336, "y" : 448 } ] }
+          "connect" : [
+            { "id" : "f20", "to" : "f12", "via" : [ { "x" : 336, "y" : 448 } ] }
+          ]
         } ],
-      "connect" : { "id" : "f10", "to" : "f13" }
+      "connect" : [
+        { "id" : "f10", "to" : "f13" }
+      ]
     } ]
 }

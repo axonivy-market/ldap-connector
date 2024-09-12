@@ -1,0 +1,36 @@
+version: 1
+
+dn: dc=zugtstdomain,dc=wan
+objectClass: dcObject
+objectClass: organization
+dc: zugtstdomain
+o: example
+
+dn: cn=Roles,dc=zugtstdomain,dc=wan
+objectClass: group
+objectClass: top
+cn: Roles
+
+dn: cn=Users,dc=zugtstdomain,dc=wan
+objectClass: group
+objectClass: top
+cn: Users
+
+dn: cn=Users,cn=Roles,dc=zugtstdomain,dc=wan
+objectClass: Roles
+objectClass: top
+cn: Users
+distinguishedName: cn=Users,cn=Roles,dc=zugtstdomain,dc=wan
+
+dn: cn=Dino,cn=Users,dc=zugtstdomain,dc=wan
+objectClass: person
+objectClass: top
+cn: Dino
+sn: Dino
+
+dn: cn=Octopus,cn=Users,dc=zugtstdomain,dc=wan
+objectClass: person
+objectClass: top
+cn: Octopus
+sn: Octopus
+

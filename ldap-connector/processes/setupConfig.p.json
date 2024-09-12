@@ -1,5 +1,5 @@
 {
-  "format" : "10.0.0",
+  "$schema" : "https://json-schema.axonivy.com/process/11.3.0/process.json",
   "id" : "17D5C4CA5704F5EC",
   "kind" : "CALLABLE_SUB",
   "config" : {
@@ -10,10 +10,10 @@
       "type" : "CallSubStart",
       "name" : "call()",
       "config" : {
-        "callSignature" : "call",
+        "signature" : "call",
         "result" : {
           "params" : [
-            { "name" : "jndiConfig", "type" : "com.axonivy.connector.ldap.util.JndiConfig" }
+            { "name" : "jndiConfig", "type" : "com.axonivy.connector.ldap.util.JndiConfig", "desc" : "" }
           ],
           "map" : {
             "result.jndiConfig" : "in.jndiConfig"
@@ -24,7 +24,9 @@
         "at" : { "x" : 96, "y" : 64 },
         "labelOffset" : { "x" : 10, "y" : 37 }
       },
-      "connect" : { "id" : "f4", "to" : "f3" }
+      "connect" : [
+        { "id" : "f4", "to" : "f3" }
+      ]
     }, {
       "id" : "f1",
       "type" : "CallSubEnd",
@@ -54,6 +56,8 @@
       "visual" : {
         "at" : { "x" : 224, "y" : 64 }
       },
-      "connect" : { "id" : "f2", "to" : "f1" }
+      "connect" : [
+        { "id" : "f2", "to" : "f1" }
+      ]
     } ]
 }

@@ -98,10 +98,10 @@
 
 				<br />
 
-				<p:dataTable var="result" value="#{data.queryResult}">
+				<p:dataTable var="result" value="#{data.queryResult}" lazy="false">
 					<p:column headerText="Result">
 						<p:dataTable var="attr" value="#{result.attributes}"
-							sortBy="#{attr.name}">
+							sortBy="#{attr.name}" lazy="false">
 							<p:column headerText="Attribute Name">
 								<h:outputText value="#{attr.name}" />
 							</p:column>
