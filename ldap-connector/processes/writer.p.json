@@ -1,5 +1,5 @@
 {
-  "format" : "10.0.0",
+  "$schema" : "https://json-schema.axonivy.com/process/11.3.0/process.json",
   "id" : "17D75C0DFF198A83",
   "kind" : "CALLABLE_SUB",
   "description" : "This LDAP connector allows you to create, delete and modify objects in a specific directory via LDAP.",
@@ -11,7 +11,7 @@
       "type" : "CallSubStart",
       "name" : "create(String,Attributes)",
       "config" : {
-        "callSignature" : "create",
+        "signature" : "create",
         "input" : {
           "params" : [
             { "name" : "distinguishedName", "type" : "String", "desc" : "unique name of the new object" },
@@ -22,15 +22,19 @@
             "out.attributes" : "param.attributes",
             "out.distinguishedName" : "param.distinguishedName"
           }
-        },
-        "tags" : "connector"
+        }
       },
+      "tags" : [
+        "connector"
+      ],
       "visual" : {
         "at" : { "x" : 112, "y" : 104 },
         "labelOffset" : { "x" : 72, "y" : 37 },
         "icon" : "res:/webContent/icons/ldap.png?small"
       },
-      "connect" : { "id" : "f6", "to" : "f9" }
+      "connect" : [
+        { "id" : "f6", "to" : "f9" }
+      ]
     }, {
       "id" : "f1",
       "type" : "CallSubEnd",
@@ -64,13 +68,15 @@
         "at" : { "x" : 504, "y" : 184 },
         "icon" : "res:/webContent/icons/ldap.png"
       },
-      "connect" : { "id" : "f2", "to" : "f1" }
+      "connect" : [
+        { "id" : "f2", "to" : "f1" }
+      ]
     }, {
       "id" : "f5",
       "type" : "CallSubStart",
       "name" : "delete(String)",
       "config" : {
-        "callSignature" : "delete",
+        "signature" : "delete",
         "input" : {
           "params" : [
             { "name" : "distinguishedName", "type" : "String", "desc" : "unique name of the object to be deleted" }
@@ -79,15 +85,19 @@
             "out.action" : "\"delete\"",
             "out.distinguishedName" : "param.distinguishedName"
           }
-        },
-        "tags" : "connector"
+        }
       },
+      "tags" : [
+        "connector"
+      ],
       "visual" : {
         "at" : { "x" : 112, "y" : 184 },
         "labelOffset" : { "x" : 38, "y" : 37 },
         "icon" : "res:/webContent/icons/ldap.png?small"
       },
-      "connect" : { "id" : "f4", "to" : "f9" }
+      "connect" : [
+        { "id" : "f4", "to" : "f9" }
+      ]
     }, {
       "id" : "f9",
       "type" : "SubProcessCall",
@@ -104,13 +114,15 @@
       "visual" : {
         "at" : { "x" : 312, "y" : 184 }
       },
-      "connect" : { "id" : "f11", "to" : "f3" }
+      "connect" : [
+        { "id" : "f11", "to" : "f3" }
+      ]
     }, {
       "id" : "f7",
       "type" : "CallSubStart",
       "name" : "modify(String,Attributes,Integer)",
       "config" : {
-        "callSignature" : "modify",
+        "signature" : "modify",
         "input" : {
           "params" : [
             { "name" : "distinguishedName", "type" : "String", "desc" : "unique name of the object to be modified" },
@@ -123,21 +135,25 @@
             "out.dirContextAction" : "param.dirContextAction",
             "out.distinguishedName" : "param.distinguishedName"
           }
-        },
-        "tags" : "connector"
+        }
       },
+      "tags" : [
+        "connector"
+      ],
       "visual" : {
         "at" : { "x" : 112, "y" : 264 },
         "labelOffset" : { "x" : 96, "y" : 37 },
         "icon" : "res:/webContent/icons/ldap.png?small"
       },
-      "connect" : { "id" : "f8", "to" : "f9" }
+      "connect" : [
+        { "id" : "f8", "to" : "f9" }
+      ]
     }, {
       "id" : "f10",
       "type" : "CallSubStart",
       "name" : "modify(String,Attributes,Integer,JndiConfig)",
       "config" : {
-        "callSignature" : "modify",
+        "signature" : "modify",
         "input" : {
           "params" : [
             { "name" : "distinguishedName", "type" : "String", "desc" : "unique name of the object to be modified" },
@@ -152,14 +168,18 @@
             "out.distinguishedName" : "param.distinguishedName",
             "out.jndiConfig" : "param.jndiConfig"
           }
-        },
-        "tags" : "connector"
+        }
       },
+      "tags" : [
+        "connector"
+      ],
       "visual" : {
         "at" : { "x" : 112, "y" : 368 },
         "labelOffset" : { "x" : 128, "y" : 37 },
         "icon" : "res:/webContent/icons/ldap.png?small"
       },
-      "connect" : { "id" : "f12", "to" : "f3" }
+      "connect" : [
+        { "id" : "f12", "to" : "f3" }
+      ]
     } ]
 }

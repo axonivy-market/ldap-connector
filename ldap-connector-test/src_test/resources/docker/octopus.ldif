@@ -1,0 +1,11 @@
+dn: cn=octopus,cn=schema,cn=config
+cn: octopus
+objectClass: olcSchemaConfig
+olcObjectClasses: {0}( 1.3.6.1.4.1.99999.1.1 NAME 'group' DESC 'Custom Axon Iv
+ y group object for testing ' SUP top STRUCTURAL MUST ( cn ) )
+olcObjectClasses: {1}( 1.3.6.1.4.1.1345.666.100.1.2 NAME 'Roles' DESC 'Custom 
+ object class for Roles entries' SUP top STRUCTURAL MUST ( cn ) MAY ( distingu
+ ishedName ) )
+olcObjectClasses: {2}( 1.3.6.1.4.1.1345.666.100.1.3 NAME 'user' DESC 'Custom o
+ bject class for user entries' SUP top STRUCTURAL MAY ( cn $ distinguishedName
+  $ mail ) )
