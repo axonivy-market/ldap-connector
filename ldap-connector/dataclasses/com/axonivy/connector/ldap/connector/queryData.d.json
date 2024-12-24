@@ -5,19 +5,15 @@
   "isBusinessCaseData" : false,
   "fields" : [ {
     "name" : "jndiConfig",
-    "type" : "com.axonivy.connector.ldap.util.JndiConfig",
-    "modifiers" : [ "PERSISTENT" ]
+    "type" : "com.axonivy.connector.ldap.util.JndiConfig"
   }, {
     "name" : "queryExecutor",
-    "type" : "com.axonivy.connector.ldap.LdapQueryExecutor",
-    "modifiers" : [ "PERSISTENT" ]
+    "type" : "com.axonivy.connector.ldap.LdapQueryExecutor"
   }, {
     "name" : "ldapQuery",
-    "type" : "com.axonivy.connector.ldap.LdapQuery",
-    "modifiers" : [ "PERSISTENT" ]
+    "type" : "com.axonivy.connector.ldap.LdapQuery"
   }, {
     "name" : "queryResult",
-    "type" : "java.util.List<com.axonivy.connector.ldap.LdapObject>",
-    "modifiers" : [ "PERSISTENT" ]
+    "type" : "java.util.List<com.axonivy.connector.ldap.LdapObject>"
   } ]
 }

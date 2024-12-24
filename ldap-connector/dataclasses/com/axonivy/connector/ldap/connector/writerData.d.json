@@ -5,16 +5,14 @@
   "isBusinessCaseData" : false,
   "fields" : [ {
     "name" : "jndiConfig",
-    "type" : "com.axonivy.connector.ldap.util.JndiConfig",
-    "modifiers" : [ "PERSISTENT" ]
+    "type" : "com.axonivy.connector.ldap.util.JndiConfig"
   }, {
     "name" : "distinguishedName",
     "type" : "String",
     "modifiers" : [ "PERSISTENT" ]
   }, {
     "name" : "attributes",
-    "type" : "javax.naming.directory.Attributes",
-    "modifiers" : [ "PERSISTENT" ]
+    "type" : "javax.naming.directory.Attributes"
   }, {
     "name" : "action",
     "type" : "String",

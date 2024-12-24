@@ -5,7 +5,6 @@
   "isBusinessCaseData" : false,
   "fields" : [ {
     "name" : "jndiConfig",
-    "type" : "com.axonivy.connector.ldap.util.JndiConfig",
-    "modifiers" : [ "PERSISTENT" ]
+    "type" : "com.axonivy.connector.ldap.util.JndiConfig"
   } ]
 }
