@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json-schema.axonivy.com/app/12.0.0/variables.json
 Variables:
   LdapConnector:
     # Ldap service provider
@@ -11,5 +12,5 @@ Variables:
     # Determines how referrals are handled by the service provider. Possible values are "follow", "ignore" or "throw".
     Referral: "follow"
     Connection:
-    # Timeout for Ldap operations
+      # Timeout for Ldap operations
       Timeout: "1000"
