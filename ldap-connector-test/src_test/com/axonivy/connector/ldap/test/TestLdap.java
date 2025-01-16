@@ -15,9 +15,15 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import com.axonivy.connector.ldap.LdapAttribute;
 import com.axonivy.connector.ldap.LdapObject;
@@ -25,21 +31,29 @@ import com.axonivy.connector.ldap.LdapQuery;
 import com.axonivy.connector.ldap.LdapQueryExecutor;
 import com.axonivy.connector.ldap.LdapWriter;
 import com.axonivy.connector.ldap.util.JndiConfig;
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.HostConfig;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
 
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.environment.IvyTest;
 
 @IvyTest
 class TestLdap {
+  private static final DockerImageName LDAP_IMAGE = DockerImageName.parse("bitnami/openldap:latest");
+  private static final String DOMAIN_COMPONENT = "dc=zugtstdomain,dc=wan";
+  private static final String FINISHED_SET_UP_LOG_REGEX = ".*slapd starting.*\\n";
   private static JndiConfig config;
   private static LdapQueryExecutor queryExecutor;
   private static LdapWriter writer;
   private static String password;
   private static String username;
-
+  private static GenericContainer<?> ldapContainer;
   private SearchControls searchcontrol;
   private LdapQuery query;
 
+  @SuppressWarnings("resource")
   @BeforeAll
   static void setupConfig() throws IOException {
     username = System.getProperty("adUsername");
@@ -58,9 +72,8 @@ class TestLdap {
       }
     }
     config = JndiConfig.create()
-            .password(password)
-            .url(Ivy.var().get("LdapConnector.Url"))
-            .userName(username)
+            .password(password).url(Ivy.var().get("LdapConnector.Url"))
+            .userName("cn=" + username + "," + DOMAIN_COMPONENT)
             .connectionTimeout(Ivy.var().get("LdapConnector.Connection.Timeout"))
             .provider(Ivy.var().get("LdapConnector.Provider"))
             .referral(Ivy.var().get("LdapConnector.Referral"))
@@ -172,8 +185,7 @@ class TestLdap {
     String distinguishedName = "CN=testldap,CN=Users,DC=zugtstdomain,DC=wan";
     query = LdapQuery.create(query)
             .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(distinguishedName=" + distinguishedName + ")")
-            .toLdapQuery();
+            .filter("(cn=testldap)").toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).isEmpty();
 
@@ -193,7 +205,7 @@ class TestLdap {
     String mail = "ivy@zug.ch";
     query = LdapQuery.create(query)
             .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(distinguishedName=" + distinguishedName + ")")
+            .filter("(cn=testldap)")
             .toLdapQuery();
 
     Attributes newObject = new BasicAttributes("objectClass", "user");
@@ -204,7 +216,7 @@ class TestLdap {
             .extracting(LdapAttribute::getName)
             .doesNotContain("mail");
 
-    Attributes newAttribute = new BasicAttributes("mail",mail);
+    Attributes newAttribute = new BasicAttributes("mail", mail);
     writer.modifyAttributes(distinguishedName, DirContext.ADD_ATTRIBUTE, newAttribute);
     queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes())
@@ -213,7 +225,7 @@ class TestLdap {
             .contains(tuple("mail", mail));
 
     mail = "ivy@luzern.ch";
-    newAttribute = new BasicAttributes("mail",mail);
+    newAttribute = new BasicAttributes("mail", mail);
     writer.modifyAttributes(distinguishedName, DirContext.REPLACE_ATTRIBUTE, newAttribute);
     queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes())
