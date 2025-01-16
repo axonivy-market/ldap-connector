@@ -59,7 +59,6 @@ public class JndiConfig {
             .referral(config.referral);
   }
 
-  @SuppressWarnings("hiding")
   public static final class Builder {
     private String provider = "";
     private String url = "";

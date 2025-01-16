@@ -44,6 +44,8 @@ class TestLdap {
   static void setupConfig() throws IOException {
     username = System.getProperty("adUsername");
     password = System.getProperty("adPassword");
+    username = "admin";
+    password = "admin";
 
     if (StringUtils.isEmpty(username)) {
       try (var in = TestLdap.class.getResourceAsStream("credentials.properties")) {
@@ -65,6 +67,28 @@ class TestLdap {
             .toJndiConfig();
     queryExecutor = new LdapQueryExecutor(config);
     writer = new LdapWriter(config);
+    
+    // Setup docker for testing
+    Network network = Network.newNetwork();
+    ldapContainer = new GenericContainer<>(LDAP_IMAGE).withNetwork(network).withNetworkAliases("octopus_ldap")
+        .withExposedPorts(1389)
+        .withCreateContainerCmdModifier(
+            cmd -> cmd.withHostConfig(HostConfig.newHostConfig().withNetworkMode(network.getId())
+                .withPortBindings(new PortBinding(Ports.Binding.bindPort(1389), new ExposedPort(1389)))))
+        .withEnv("LDAP_ROOT", DOMAIN_COMPONENT).withEnv("LDAP_ADMIN_USERNAME", username)
+        .withEnv("LDAP_ADMIN_PASSWORD", password).withEnv("LDAP_EXTRA_SCHEMAS", "cosine,inetorgperson,nis,octopus")
+        .withEnv("LDAP_USER_DC", "octopus-users")
+        .withCopyFileToContainer(MountableFile.forHostPath("../ldap-connector-demo/docker/octopus.ldif"),
+            "/opt/bitnami/openldap/etc/schema/octopus.ldif")
+        .withCopyFileToContainer(MountableFile.forHostPath("../ldap-connector-demo/docker/ldifs/data.ldif"),
+            "/ldifs/data.ldif")
+        .waitingFor(Wait.forLogMessage(FINISHED_SET_UP_LOG_REGEX, 1));
+    ldapContainer.start();
+  }
+
+  @AfterAll
+  static void clearTestContainer() {
+    ldapContainer.close();
   }
 
   @BeforeEach
