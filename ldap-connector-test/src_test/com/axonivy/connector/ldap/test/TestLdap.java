@@ -58,6 +58,8 @@ class TestLdap {
   static void setupConfig() throws IOException {
     username = System.getProperty("adUsername");
     password = System.getProperty("adPassword");
+    username = "admin";
+    password = "admin";
 
     if (StringUtils.isEmpty(username)) {
       try (var in = TestLdap.class.getResourceAsStream("credentials.properties")) {
@@ -89,9 +91,9 @@ class TestLdap {
         .withEnv("LDAP_ROOT", DOMAIN_COMPONENT).withEnv("LDAP_ADMIN_USERNAME", username)
         .withEnv("LDAP_ADMIN_PASSWORD", password).withEnv("LDAP_EXTRA_SCHEMAS", "cosine,inetorgperson,nis,octopus")
         .withEnv("LDAP_USER_DC", "octopus-users")
-        .withCopyFileToContainer(MountableFile.forHostPath("src_test/resources/docker/octopus.ldif"),
+        .withCopyFileToContainer(MountableFile.forHostPath("../ldap-connector-demo/docker/octopus.ldif"),
             "/opt/bitnami/openldap/etc/schema/octopus.ldif")
-        .withCopyFileToContainer(MountableFile.forHostPath("src_test/resources/docker/ldifs/data.ldif"),
+        .withCopyFileToContainer(MountableFile.forHostPath("../ldap-connector-demo/docker/ldifs/data.ldif"),
             "/ldifs/data.ldif")
         .waitingFor(Wait.forLogMessage(FINISHED_SET_UP_LOG_REGEX, 1));
     ldapContainer.start();

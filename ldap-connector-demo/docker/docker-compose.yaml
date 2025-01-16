@@ -1,0 +1,14 @@
+services:
+  ldap:
+    image: bitnami/openldap:latest
+    container_name: octopus_ldap
+    environment:
+      - LDAP_ROOT=dc=zugtstdomain,dc=wan
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=password
+      - LDAP_EXTRA_SCHEMAS=cosine,inetorgperson,nis,octopus
+    ports:
+      - "1389:1389"
+    volumes:
+      - './octopus.ldif:/opt/bitnami/openldap/etc/schema/octopus.ldif'
+      - './ldifs/data.ldif:/ldifs/data.ldif'
