@@ -8,10 +8,6 @@
     <variables.yaml.file>../ldap-connector/config/variables.yaml</variables.yaml.file>
   </properties>
 
-  <properties>
-    <variables.yaml.file>../ldap-connector/config/variables.yaml</variables.yaml.file>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
