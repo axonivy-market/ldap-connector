@@ -5,7 +5,7 @@ services:
     environment:
       - LDAP_ROOT=dc=zugtstdomain,dc=wan
       - LDAP_ADMIN_USERNAME=admin
-      - LDAP_ADMIN_PASSWORD=password
+      - LDAP_ADMIN_PASSWORD=
       - LDAP_EXTRA_SCHEMAS=cosine,inetorgperson,nis,octopus
     ports:
       - "1389:1389"
