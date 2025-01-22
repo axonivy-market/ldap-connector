@@ -58,8 +58,6 @@ class TestLdap {
   static void setupConfig() throws IOException {
     username = System.getProperty("adUsername");
     password = System.getProperty("adPassword");
-    username = "admin";
-    password = "admin";
 
     if (StringUtils.isEmpty(username)) {
       try (var in = TestLdap.class.getResourceAsStream("credentials.properties")) {

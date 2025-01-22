@@ -26,7 +26,7 @@ Labels:
   ConfigDialogHeader: Jndi Server Configuration
   DefaultUrlPlaceholder: ldap://localhost:1389
   DistinguishedName: Distinguished Name
-  DistinguishedNamePlaceHolder: cn=admin,dc=zugtstdomain,dc=wan
+  DistinguishedNamePlaceHolder: cn-Users,cn=Roles,dc=zugtstdomain,dc=wan
   Done: Done
   ExecuteQuery: Execute Query
   Filter: Filter
@@ -45,6 +45,5 @@ Labels:
   User: User
   UserPlaceholder: cn=admin,dc=zugtstdomain,dc=wan
   Value: Value
-  AddAttribute: Add Attribute
   ReplaceAttribute: Replace Attribute
   RemoveAttribute: Remove Attribute
