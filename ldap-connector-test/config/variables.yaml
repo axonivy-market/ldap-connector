@@ -7,4 +7,4 @@
 #
 Variables:
   LdapConnector:
-    Url: "ldap://159.100.249.76:389"
+    Url: "ldap://localhost:1389"
