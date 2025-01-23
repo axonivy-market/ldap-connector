@@ -39,7 +39,6 @@ public class LdapQuery {
             .searchControl(ldapQuery.searchControl);
   }
 
-  @SuppressWarnings("hiding")
   public static final class Builder {
     private String rootObject = "";
     private String filter = "";
