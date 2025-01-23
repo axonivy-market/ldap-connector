@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axonivy.connector.ldap</groupId>
   <artifactId>ldap-connector-product</artifactId>
-  <version>10.0.24-SNAPSHOT</version>
+  <version>10.0.24</version>
   <packaging>pom</packaging>
   <properties>
     <variables.yaml.file>../ldap-connector/config/variables.yaml</variables.yaml.file>
