@@ -2,8 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axonivy.connector.ldap</groupId>
   <artifactId>ldap-connector-product</artifactId>
-  <version>10.0.3-SNAPSHOT</version>
+  <version>10.0.24-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <properties>
+    <variables.yaml.file>../ldap-connector/config/variables.yaml</variables.yaml.file>
+  </properties>
 
   <build>
     <plugins>
@@ -17,12 +20,38 @@
             <goals>
               <goal>single</goal>
             </goals>
-            <configuration>              
+            <configuration>
               <appendAssemblyId>false</appendAssemblyId>
               <descriptors>
                 <descriptor>zip.xml</descriptor>
               </descriptors>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <configuration>
+              <skip>${skip-readme}</skip>
+              <target>
+                <copy todir="${project.build.directory}">
+                  <fileset dir="../../" includes="doc/**" />
+                </copy>
+                <copy todir="${project.build.directory}">
+                  <fileset dir="." includes="README*.md" />
+                </copy>
+                <loadfile property="variables.yaml" srcFile="${variables.yaml.file}" encoding="UTF-8" failonerror="false" />
+                <replace file="${project.build.directory}/README.md" token="@variables.yaml@" value="${variables.yaml}" />
+                <replace file="${project.build.directory}/README_DE.md" token="@variables.yaml@" value="${variables.yaml}" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -33,7 +62,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
           <version>3.0.0-M1</version>
-        </plugin>        
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>

@@ -7,37 +7,29 @@
 	xmlns:pe="http://primefaces.org/ui/extensions">
 <h:body>
 	<ui:composition template="/layouts/frame-9.xhtml">
-		<ui:define name="title">LDAP Modify</ui:define>
+		<ui:define name="title">#{ivy.cm.co('/Dialogs/com/axonivy/connector/ldap/demo/Modify/Title')}</ui:define>
 		<ui:define name="content">
 
-			<h3>LDAP Modify Demo</h3>
-			<p>This demo shows how easy it is to modify the attributes of an
-				object via LDAP. To do this, you must first specify the Jndi Server
-				Configuration to connect to the desired server. Note that these
-				configurations can be set permanently in "variables.yaml". To modify
-				an object, you must first enter its distinguished name. Then you can
-				specify an attribute name and value and select the desired action
-				(e.g. replacement) that will be performed in the underlying
-				subprocess.</p>
-
+			<h3>#{ivy.cm.co('/Dialogs/com/axonivy/connector/ldap/demo/Modify/Header')}</h3>
+			<p>#{ivy.cms.co("/Dialogs/com/axonivy/connector/ldap/demo/Modify/Introduction")}</p>
 			<h:form id="form">
 				<p:messages />
 				<p:panelGrid columns="2" layout="grid">
 					<f:facet name="header">
-						<h:outputText value="Jndi Server Configuration" />
+						<h:outputText value="#{ivy.cms.co('/Labels/ConfigDialogHeader')}" />
 					</f:facet>
-					<p:outputLabel value="Provider" for="Provider" style="float:left" />
+					<p:outputLabel value="#{ivy.cms.co('/Labels/Provider')}" for="Provider" style="float:left" />
 					<p:inputText value="#{data.provider}" id="Provider" required="true"
 						style="float:left" />
-					<p:outputLabel value="Url" for="Url" style="float:left" />
+					<p:outputLabel value="#{ivy.cms.co('/Labels/Url')}" for="Url" style="float:left" />
 					<p:inputText value="#{data.url}"
-						placeholder="ldap://111.111.111.11:389" id="Url" required="true"
+						placeholder="#{ivy.cms.co('/Labels/DefaultUrlPlaceholder')}" id="Url" required="true"
 						style="float:left" />
-					<p:outputLabel value="User" for="User" style="float:left" />
+					<p:outputLabel value="#{ivy.cms.co('/Labels/User')}" for="User" style="float:left" />
 					<p:inputText value="#{data.user}"
-						placeholder="cn=admin,cn=Users,dc=domain,dc=wan" id="User"
+						placeholder="#{ivy.cms.co('/Labels/UserPlaceholder')}" id="User"
 						required="true" style="float:left" />
-					<p:outputLabel value="Password" for="Password" style="float:left" />
+					<p:outputLabel value="#{ivy.cms.co('/Labels/Password')}" for="Password" style="float:left" />
 					<p:inputText value="#{data.password}" type="password" id="Password"
 						required="false" style="float:left" />
 				</p:panelGrid>
@@ -46,29 +38,29 @@
 
 				<p:panelGrid columns="1" layout="grid">
 					<f:facet name="header">
-						<h:outputText value="Jndi Modification" />
+						<h:outputText value="#{ivy.cms.co('/Dialogs/com/axonivy/connector/ldap/demo/Modify/DialogHeader')}" />
 					</f:facet>
 
 					<p:panelGrid columns="2" layout="grid">
-						<p:outputLabel value="Distinguished Name" for="distinguishedName"
+						<p:outputLabel value="#{ivy.cms.co('/Labels/DistinguishedName')}" for="distinguishedName"
 							style="float:left" />
 						<p:inputText value="#{data.distinguishedName}"
-							placeholder="CN=Users,DC=domain,DC=wan" id="distinguishedName"
+							placeholder="#{ivy.cms.co('/Labels/DistinguishedNamePlaceHolder')}" id="distinguishedName"
 							required="true" style="float:left" />
 
 						<p:commandButton id="showObject"
-							actionListener="#{logic.showObject}" value="Show Object"
+							actionListener="#{logic.showObject}" value="#{ivy.cms.co('/Labels/ShowObjectBtnLabel')}"
 							update="form" icon="ui-icon-search" ajax="false" />
 						<p:spacer />
 
-						<p:outputLabel value="Attribute Name" for="attributeName"
+						<p:outputLabel value="#{ivy.cms.co('/Labels/AttributeName')}" for="attributeName"
 							style="float:left" />
 						<p:inputText value="#{data.attributeName}" id="attributeName"
-							required="false" placeholder="mail" style="float:left" />
-						<p:outputLabel value="Attribute Value" for="attributeValue"
+							required="false" placeholder="#{ivy.cms.co('/Labels/AttributeNamePlaceholder')}" style="float:left" />
+						<p:outputLabel value="#{ivy.cms.co('/Labels/AttributeValue')}" for="attributeValue"
 							style="float:left" />
 						<p:inputText value="#{data.attributeValue}" id="attributeValue"
-							required="false" placeholder="name@mail.com" style="float:left" />
+							required="false" placeholder="#{ivy.cms.co('/Labels/AttributeValuePlaceholder')}" style="float:left" />
 					</p:panelGrid>
 
 
@@ -76,17 +68,17 @@
 					<h:panelGrid columns="3">
 
 						<p:commandButton id="addAttribute"
-							actionListener="#{logic.addAttribute}" value="Add Attribute"
+							actionListener="#{logic.addAttribute}" value="#{ivy.cms.co('/Labels/AddAttribute')}"
 							update="form" icon="ui-icon-plus" ajax="false" />
 
 						<p:commandButton id="replaceAttribute"
 							actionListener="#{logic.replaceAttribute}"
-							value="Replace Attribute" update="form" icon="ui-icon-refresh"
+							value="#{ivy.cms.co('/Labels/ReplaceAttribute')}" update="form" icon="ui-icon-refresh"
 							ajax="false" />
 
 						<p:commandButton id="removeAttribute"
 							actionListener="#{logic.removeAttribute}"
-							value="Remove Attribute" update="form" icon="ui-icon-cancel"
+							value="#{ivy.cms.co('/Labels/RemoveAttribute')}" update="form" icon="ui-icon-cancel"
 							ajax="false" />
 					</h:panelGrid>
 				</p:panelGrid>
@@ -94,13 +86,13 @@
 				<br />
 
 				<p:dataTable var="result" value="#{data.queryResult}">
-					<p:column headerText="Result">
+					<p:column headerText="#{ivy.cms.co('/Labels/Result')}">
 						<p:dataTable var="attr" value="#{result.attributes}"
 							sortBy="#{attr.name}">
-							<p:column headerText="Attribute Name">
+							<p:column headerText="#{ivy.cms.co('/Labels/AttributeName')}">
 								<h:outputText value="#{attr.name}" />
 							</p:column>
-							<p:column headerText="Value">
+							<p:column headerText="#{ivy.cms.co('/Labels/Value')}">
 								<h:outputText value="#{attr.value}" />
 							</p:column>
 						</p:dataTable>
@@ -111,7 +103,7 @@
 
 				<div class="command-btns">
 					<p:commandButton id="done" actionListener="#{logic.close}"
-						value="Done" update="form" icon="ui-icon-check" immediate="true" />
+						value="#{ivy.cms.co('/Labels/Done')}" update="form" icon="ui-icon-check" immediate="true" />
 				</div>
 			</h:form>
 

@@ -1,0 +1,49 @@
+Dialogs:
+  com:
+    axonivy:
+      connector:
+        ldap:
+          demo:
+            Modify:
+              DialogHeader: Jndi Modification
+              Header: LDAP Modify Demo
+              Introduction: This demo shows how easy it is to modify the attributes of an object via LDAP. To do this, you must first specify the Jndi Server Configuration to connect to the desired server. Note that these configurations can be set permanently in "variables.yaml". To modify an object,
+                you must first enter its distinguished name. Then you can specify an attribute name and value and select the desired action (e.g. replacement) that will be performed in the underlying subprocess.
+              Title: LDAP Modify
+            Query:
+              DialogHeader: Jndi Query
+              Header: LDAP Query Demo
+              Instruction: You can specify a subset of attributes that will be returned as the result. To do this, enter the attribute names (e.g. distinguishedName) you are looking for and add them. If the list of selected attributes is empty, all available attributes are shown in the result.
+              Introduction: This demo shows how easy it is to retrieve data from a server that supports LDAP. To do this, you must first specify the Jndi Server Configuration to connect to the desired server. Note that these configurations can be set permanently in "variables.yaml". In order to retrieve
+                data, you can enter a query that will be handled in the underlying subprocess. The returned objects are displayed in the results table.
+              Title: LDAP Modify
+Labels:
+  AddAttribute: Add Attribute
+  AttributeName: Attribute Name
+  AttributeNamePlaceholder: commonName
+  AttributeValue: Attribute Value
+  AttributeValuePlaceholder: octopus
+  ConfigDialogHeader: Jndi Server Configuration
+  DefaultUrlPlaceholder: ldap://localhost:1389
+  DistinguishedName: Distinguished Name
+  DistinguishedNamePlaceHolder: cn=Users,cn=Roles,dc=zugtstdomain,dc=wan
+  Done: Done
+  ExecuteQuery: Execute Query
+  Filter: Filter
+  ObjectScope: Object Scope
+  OnelevelScope: Onelevel Scope
+  Password: Password
+  Provider: Provider
+  ResetAttributeListBtn: Reset Attribute List
+  Result: Result
+  RootObject: Root Object
+  RootObjectPlaceholder: DC=zugtstdomain,DC=wan
+  Scope: Scope
+  ShowObjectBtnLabel: Show Object
+  SubtreeScope: Subtree Scope
+  Url: Url
+  User: User
+  UserPlaceholder: cn=admin,dc=zugtstdomain,dc=wan
+  Value: Value
+  ReplaceAttribute: Replace Attribute
+  RemoveAttribute: Remove Attribute

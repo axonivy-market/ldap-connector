@@ -13,10 +13,10 @@
         "callSignature" : "start",
         "input" : {
           "map" : {
-            "out.password" : "ivy.var.LdapConnector_Password",
-            "out.provider" : "ivy.var.LdapConnector_Provider",
-            "out.url" : "ivy.var.LdapConnector_Url",
-            "out.user" : "ivy.var.LdapConnector_Username"
+            "out.password" : "ivy.var.get(\"LdapConnector.Password\")",
+            "out.provider" : "ivy.var.get(\"LdapConnector.Provider\")",
+            "out.url" : "ivy.var.get(\"LdapConnector.Url\")",
+            "out.user" : "ivy.var.get(\"LdapConnector.Username\")"
           }
         },
         "guid" : "17D93EE360B9ABAA"
@@ -105,8 +105,8 @@
             "            .url(in.url)",
             "            .userName(in.user)",
             "            .password(in.Password)",
-            "            .referral(ivy.var.LdapConnector_Referral)",
-            "            .connectionTimeout(ivy.var.LdapConnector_Connection_Timeout)",
+            "            .referral(ivy.var.get(\"LdapConnector.Referral\"))",
+            "            .connectionTimeout(ivy.var.get(\"LdapConnector.Connection.Timeout\"))",
             "            .toJndiConfig();",
             "            ",
             "SearchControls searchControl = new SearchControls();",
