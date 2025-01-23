@@ -1,0 +1,17 @@
+# Dear Bug Hunter
+# This credential is intentionally included for educational purposes only and does not provide access to any production systems
+# Please do not submit it as part of our bug bounty program
+services:
+  ldap:
+    image: bitnami/openldap:latest
+    container_name: octopus_ldap
+    environment:
+      - LDAP_ROOT=dc=zugtstdomain,dc=wan
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=
+      - LDAP_EXTRA_SCHEMAS=cosine,inetorgperson,nis,octopus
+    ports:
+      - "1389:1389"
+    volumes:
+      - './octopus.ldif:/opt/bitnami/openldap/etc/schema/octopus.ldif'
+      - './ldifs/data.ldif:/ldifs/data.ldif'
