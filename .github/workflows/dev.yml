@@ -8,6 +8,6 @@ on:
 
 jobs:
   build:
-    uses: axonivy-market/github-workflows/.github/workflows/dev.yml@v5
+    uses: axonivy-market/github-workflows/.github/workflows/dev.yml@v6
     secrets:
       mvnArgs: -Dactivedirectory.username=${{ secrets.ACTIVE_DIRECTORY_USERNAME }} -Dactivedirectory.password=${{ secrets.ACTIVE_DIRECTORY_PASSWORD }}
