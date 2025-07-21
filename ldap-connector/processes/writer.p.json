@@ -1,5 +1,5 @@
 {
-  "$schema" : "https://json-schema.axonivy.com/process/12.0.0/process.json",
+  "$schema" : "https://json-schema.axonivy.com/process/13.1.2/process.json",
   "id" : "17D75C0DFF198A83",
   "kind" : "CALLABLE_SUB",
   "description" : "This LDAP connector allows you to create, delete and modify objects in a specific directory via LDAP.",
