@@ -3,7 +3,7 @@
   <groupId>com.axonivy.connector.ldap</groupId>
   <name>ldap-connector</name>
   <artifactId>ldap-connector-modules</artifactId>
-  <version>12.0.2-SNAPSHOT</version>
+  <version>13.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
