@@ -1,14 +1,22 @@
 services:
   ldap:
-    image: bitnami/openldap:latest
+    image: osixia/openldap:latest
     container_name: octopus_ldap
     environment:
-      - LDAP_ROOT=dc=zugtstdomain,dc=wan
-      - LDAP_ADMIN_USERNAME=admin
-      - LDAP_ADMIN_PASSWORD=
-      - LDAP_EXTRA_SCHEMAS=cosine,inetorgperson,nis,octopus
+      - LDAP_ORGANISATION=example
+      - LDAP_DOMAIN=zugtstdomain.wan
+      - LDAP_ADMIN_PASSWORD=admin
+      - LDAP_CONFIG_PASSWORD=config
+      - LDAP_READONLY_USER=false
+      - LDAP_RFC2307BIS_SCHEMA=false
+      - LDAP_BACKEND=mdb
+      - LDAP_TLS=false
+      - LDAP_REPLICATION=false
+      - KEEP_EXISTING_CONFIG=false
+      - LDAP_REMOVE_CONFIG_AFTER_SETUP=true
     ports:
-      - "1389:1389"
+      - "389:389"
     volumes:
-      - './octopus.ldif:/opt/bitnami/openldap/etc/schema/octopus.ldif'
-      - './ldifs/data.ldif:/ldifs/data.ldif'
+      - './ldifs:/container/service/slapd/assets/config/bootstrap/ldif/custom'
+      - './octopus.ldif:/container/service/slapd/assets/config/bootstrap/schema/custom/octopus.ldif'
+    command: --copy-service
