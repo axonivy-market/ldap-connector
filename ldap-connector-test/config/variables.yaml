@@ -8,7 +8,7 @@
 #
 Variables:
   LdapConnector:
-    Url: ldap://localhost:1389
+    Url: ldap://localhost:389
     Provider: com.sun.jndi.ldap.LdapCtxFactory
     Referal: follow
     Connection:
