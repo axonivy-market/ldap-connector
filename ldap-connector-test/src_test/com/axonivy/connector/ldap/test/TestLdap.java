@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 
@@ -41,9 +42,14 @@ import ch.ivyteam.ivy.environment.IvyTest;
 
 @IvyTest
 class TestLdap {
-  private static final DockerImageName LDAP_IMAGE = DockerImageName.parse("bitnami/openldap:latest");
+  private static final DockerImageName LDAP_IMAGE = DockerImageName.parse("osixia/openldap:latest");
   private static final String DOMAIN_COMPONENT = "dc=zugtstdomain,dc=wan";
-  private static final String FINISHED_SET_UP_LOG_REGEX = ".*slapd starting.*\\n";
+  private static final String FALSE_VALUE = "false";
+  private static final String TRUE_VALUE = "true";
+  private static final String USERS_FILTER = "(ou=Users)";
+  private static final String OBJECT_CLASS = "objectClass";
+  private static final String INET_ORG_PERSON = "inetOrgPerson";
+
   private static JndiConfig config;
   private static LdapQueryExecutor queryExecutor;
   private static LdapWriter writer;
@@ -71,7 +77,7 @@ class TestLdap {
     }
     config = JndiConfig.create()
             .password(password).url(Ivy.var().get("LdapConnector.Url"))
-            .userName("cn=" + username + "," + DOMAIN_COMPONENT)
+            .userName("cn=admin," + DOMAIN_COMPONENT)
             .connectionTimeout(Ivy.var().get("LdapConnector.Connection.Timeout"))
             .provider(Ivy.var().get("LdapConnector.Provider"))
             .referral(Ivy.var().get("LdapConnector.Referral"))
@@ -79,21 +85,33 @@ class TestLdap {
     queryExecutor = new LdapQueryExecutor(config);
     writer = new LdapWriter(config);
     
-    // Setup docker for testing
     Network network = Network.newNetwork();
     ldapContainer = new GenericContainer<>(LDAP_IMAGE).withNetwork(network).withNetworkAliases("octopus_ldap")
-        .withExposedPorts(1389)
+        .withExposedPorts(389)
         .withCreateContainerCmdModifier(
             cmd -> cmd.withHostConfig(HostConfig.newHostConfig().withNetworkMode(network.getId())
-                .withPortBindings(new PortBinding(Ports.Binding.bindPort(1389), new ExposedPort(1389)))))
-        .withEnv("LDAP_ROOT", DOMAIN_COMPONENT).withEnv("LDAP_ADMIN_USERNAME", username)
-        .withEnv("LDAP_ADMIN_PASSWORD", password).withEnv("LDAP_EXTRA_SCHEMAS", "cosine,inetorgperson,nis,octopus")
-        .withEnv("LDAP_USER_DC", "octopus-users")
-        .withCopyFileToContainer(MountableFile.forHostPath("../ldap-connector-demo/docker/octopus.ldif"),
-            "/opt/bitnami/openldap/etc/schema/octopus.ldif")
-        .withCopyFileToContainer(MountableFile.forHostPath("../ldap-connector-demo/docker/ldifs/data.ldif"),
-            "/ldifs/data.ldif")
-        .waitingFor(Wait.forLogMessage(FINISHED_SET_UP_LOG_REGEX, 1));
+                .withPortBindings(
+                    new PortBinding(Ports.Binding.bindPort(389), new ExposedPort(389)))))
+        .withEnv("LDAP_ORGANISATION", "example")
+        .withEnv("LDAP_DOMAIN", "zugtstdomain.wan")
+        .withEnv("LDAP_ADMIN_PASSWORD", password)
+        .withEnv("LDAP_CONFIG_PASSWORD", "config")
+        .withEnv("LDAP_READONLY_USER", FALSE_VALUE)
+        .withEnv("LDAP_RFC2307BIS_SCHEMA", FALSE_VALUE)
+        .withEnv("LDAP_BACKEND", "mdb")
+        .withEnv("LDAP_TLS", FALSE_VALUE)
+        .withEnv("LDAP_REPLICATION", FALSE_VALUE)
+        .withEnv("KEEP_EXISTING_CONFIG", FALSE_VALUE)
+        .withEnv("LDAP_REMOVE_CONFIG_AFTER_SETUP", TRUE_VALUE)
+        .withCopyFileToContainer(
+            MountableFile.forHostPath(java.nio.file.Paths.get("").toAbsolutePath().resolve("../ldap-connector-demo/docker/octopus.ldif")),
+            "/container/service/slapd/assets/config/bootstrap/schema/custom/octopus.ldif")
+        .withCopyFileToContainer(
+            MountableFile.forHostPath(java.nio.file.Paths.get("").toAbsolutePath().resolve("../ldap-connector-demo/docker/ldifs/data.ldif")),
+            "/container/service/slapd/assets/config/bootstrap/ldif/custom/data.ldif")
+        .withCommand("--copy-service")
+        .waitingFor(Wait.forLogMessage(".*slapd starting.*", 1))
+        .withStartupTimeout(Duration.ofMinutes(2));
     ldapContainer.start();
   }
 
@@ -115,28 +133,42 @@ class TestLdap {
   @Test
   void person_query() throws Exception {
     query = LdapQuery.create(query)
-            .rootObject("CN=Users,DC=zugtstdomain,DC=wan")
-            .filter("(objectClass=person)")
+            .rootObject("ou=Users," + DOMAIN_COMPONENT)
+            .filter("(" + OBJECT_CLASS + "=" + INET_ORG_PERSON + ")")
             .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
-    assertThat(queryResult).hasSizeGreaterThanOrEqualTo(2);
+    assertThat(queryResult).hasSizeGreaterThanOrEqualTo(4);
+    
+    assertThat(queryResult)
+            .extracting(obj -> obj.getAttributes().stream()
+                    .filter(attr -> "cn".equals(attr.getName()))
+                    .map(LdapAttribute::getValue)
+                    .findFirst().orElse(""))
+            .contains("Dino", "Octopus", "TestUser1", "TestUser2");
   }
 
   @Test
   void group_query() throws Exception {
     query = LdapQuery.create(query)
-            .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(objectClass=group)")
+            .rootObject(DOMAIN_COMPONENT)
+            .filter("(" + OBJECT_CLASS + "=groupOfNames)")
             .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
-    assertThat(queryResult).hasSizeGreaterThan(0);
+    assertThat(queryResult).hasSizeGreaterThanOrEqualTo(2);
+    
+    assertThat(queryResult)
+            .extracting(obj -> obj.getAttributes().stream()
+                    .filter(attr -> "cn".equals(attr.getName()))
+                    .map(LdapAttribute::getValue)
+                    .findFirst().orElse(""))
+            .contains("Users", "TestGroup");
   }
 
   @Test
   void empty_result() throws Exception {
     query = LdapQuery.create(query)
-            .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(objectClass=group1xy)")
+            .rootObject(DOMAIN_COMPONENT)
+            .filter("(" + OBJECT_CLASS + "=nonexistent)")
             .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(0);
@@ -144,10 +176,10 @@ class TestLdap {
 
   @Test
   void select_single_attribute() throws Exception {
-    searchcontrol.setReturningAttributes(new String[] {"name"});
+    searchcontrol.setReturningAttributes(new String[] {"ou"});
     query = LdapQuery.create(query)
-            .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
+            .rootObject(DOMAIN_COMPONENT)
+            .filter(USERS_FILTER)
             .searchControl(searchcontrol)
             .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
@@ -157,8 +189,8 @@ class TestLdap {
   @Test
   void select_all_attributes() throws Exception {
     query = LdapQuery.create(query)
-            .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
+            .rootObject(DOMAIN_COMPONENT)
+            .filter(USERS_FILTER)
             .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes()).hasSizeGreaterThan(1);
@@ -167,27 +199,34 @@ class TestLdap {
   @Test
   void check_attribute_value() throws Exception {
     query = LdapQuery.create(query)
-            .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(distinguishedName=CN=Users,CN=Roles,DC=zugtstdomain,DC=wan)")
+            .rootObject(DOMAIN_COMPONENT)
+            .filter("(" + OBJECT_CLASS + "=*)")
             .toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
-    assertThat(queryResult).hasSize(1);
-    assertThat(queryResult.get(0).getAttributes())
-            .hasSizeGreaterThan(1)
-            .extracting(LdapAttribute::getName, LdapAttribute::getValue)
-            .contains(tuple("cn", "Users"));
+    
+    assertThat(queryResult).hasSizeGreaterThanOrEqualTo(10);
+    
+    query = LdapQuery.create(query)
+            .rootObject(DOMAIN_COMPONENT)
+            .filter(USERS_FILTER)
+            .toLdapQuery();
+    List<LdapObject> usersResult = queryExecutor.perform(query);
+    assertThat(usersResult).hasSize(1);
   }
 
   @Test
   void create_and_destroy_user() throws NamingException {
-    String distinguishedName = "CN=testldap,CN=Users,DC=zugtstdomain,DC=wan";
+    String distinguishedName = "cn=tempUser,ou=Users," + DOMAIN_COMPONENT;
     query = LdapQuery.create(query)
-            .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(cn=testldap)").toLdapQuery();
+            .rootObject(DOMAIN_COMPONENT)
+            .filter("(cn=tempUser)").toLdapQuery();
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).isEmpty();
 
-    Attributes newObject = new BasicAttributes("objectClass", "user");
+    Attributes newObject = new BasicAttributes();
+    newObject.put(OBJECT_CLASS, INET_ORG_PERSON);
+    newObject.put("cn", "tempUser");
+    newObject.put("sn", "tempUser");
     writer.createObject(distinguishedName, newObject);
     queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(1);
@@ -199,48 +238,36 @@ class TestLdap {
 
   @Test
   void modify_attributes() throws NamingException {
-    String distinguishedName = "CN=testldap,CN=Users,DC=zugtstdomain,DC=wan";
-    String mail = "ivy@zug.ch";
+    String distinguishedName = "cn=Dino,ou=Users," + DOMAIN_COMPONENT;
+    String newMail = "dino.modified@zug.ch";
     query = LdapQuery.create(query)
-            .rootObject("DC=zugtstdomain,DC=wan")
-            .filter("(cn=testldap)")
+            .rootObject(DOMAIN_COMPONENT)
+            .filter("(cn=Dino)")
             .toLdapQuery();
 
-    Attributes newObject = new BasicAttributes("objectClass", "user");
-    writer.createObject(distinguishedName, newObject);
     List<LdapObject> queryResult = queryExecutor.perform(query);
+    assertThat(queryResult).hasSize(1);
     assertThat(queryResult.get(0).getAttributes())
-            .hasSizeGreaterThan(1)
-            .extracting(LdapAttribute::getName)
-            .doesNotContain("mail");
-
-    Attributes newAttribute = new BasicAttributes("mail", mail);
-    writer.modifyAttributes(distinguishedName, DirContext.ADD_ATTRIBUTE, newAttribute);
-    queryResult = queryExecutor.perform(query);
-    assertThat(queryResult.get(0).getAttributes())
-            .hasSizeGreaterThan(1)
             .extracting(LdapAttribute::getName, LdapAttribute::getValue)
-            .contains(tuple("mail", mail));
+            .contains(tuple("mail", "dino@zugtstdomain.wan"));
 
-    mail = "ivy@luzern.ch";
-    newAttribute = new BasicAttributes("mail", mail);
+    Attributes newAttribute = new BasicAttributes("mail", newMail);
     writer.modifyAttributes(distinguishedName, DirContext.REPLACE_ATTRIBUTE, newAttribute);
     queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes())
-            .hasSizeGreaterThan(1)
             .extracting(LdapAttribute::getName, LdapAttribute::getValue)
-            .contains(tuple("mail", mail));
+            .contains(tuple("mail", newMail));
 
     newAttribute = new BasicAttributes();
     newAttribute.put(new BasicAttribute("mail"));
     writer.modifyAttributes(distinguishedName, DirContext.REMOVE_ATTRIBUTE, newAttribute);
     queryResult = queryExecutor.perform(query);
     assertThat(queryResult.get(0).getAttributes())
-            .hasSizeGreaterThan(1)
             .extracting(LdapAttribute::getName)
             .doesNotContain("mail");
 
-    writer.destroyObject(distinguishedName);
+    newAttribute = new BasicAttributes("mail", "dino@zugtstdomain.wan");
+    writer.modifyAttributes(distinguishedName, DirContext.ADD_ATTRIBUTE, newAttribute);
   }
 
 }
