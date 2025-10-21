@@ -1,36 +1,53 @@
 version: 1
 
-dn: dc=zugtstdomain,dc=wan
-objectClass: dcObject
-objectClass: organization
-dc: zugtstdomain
-o: example
+# Organizational Units
+dn: ou=Roles,dc=zugtstdomain,dc=wan
+objectClass: organizationalUnit
+ou: Roles
 
-dn: cn=Roles,dc=zugtstdomain,dc=wan
-objectClass: group
-objectClass: top
-cn: Roles
+dn: ou=Users,dc=zugtstdomain,dc=wan
+objectClass: organizationalUnit
+ou: Users
 
-dn: cn=Users,dc=zugtstdomain,dc=wan
-objectClass: group
-objectClass: top
+dn: ou=Groups,dc=zugtstdomain,dc=wan
+objectClass: organizationalUnit
+ou: Groups
+
+# Groups in Roles OU
+dn: cn=Users,ou=Roles,dc=zugtstdomain,dc=wan
+objectClass: groupOfNames
 cn: Users
+member: cn=admin,dc=zugtstdomain,dc=wan
 
-dn: cn=Users,cn=Roles,dc=zugtstdomain,dc=wan
-objectClass: Roles
-objectClass: top
-cn: Users
-distinguishedName: cn=Users,cn=Roles,dc=zugtstdomain,dc=wan
+# Groups in Groups OU
+dn: cn=TestGroup,ou=Groups,dc=zugtstdomain,dc=wan
+objectClass: groupOfNames
+cn: TestGroup
+member: cn=admin,dc=zugtstdomain,dc=wan
+member: cn=Dino,ou=Users,dc=zugtstdomain,dc=wan
 
-dn: cn=Dino,cn=Users,dc=zugtstdomain,dc=wan
-objectClass: person
-objectClass: top
+# Users in Users OU
+dn: cn=Dino,ou=Users,dc=zugtstdomain,dc=wan
+objectClass: inetOrgPerson
 cn: Dino
 sn: Dino
+mail: dino@zugtstdomain.wan
 
-dn: cn=Octopus,cn=Users,dc=zugtstdomain,dc=wan
-objectClass: person
-objectClass: top
+dn: cn=Octopus,ou=Users,dc=zugtstdomain,dc=wan
+objectClass: inetOrgPerson
 cn: Octopus
 sn: Octopus
+mail: octopus@zugtstdomain.wan
+
+dn: cn=TestUser1,ou=Users,dc=zugtstdomain,dc=wan
+objectClass: inetOrgPerson
+cn: TestUser1
+sn: User1
+mail: testuser1@zugtstdomain.wan
+
+dn: cn=TestUser2,ou=Users,dc=zugtstdomain,dc=wan
+objectClass: inetOrgPerson
+cn: TestUser2
+sn: User2
+mail: testuser2@zugtstdomain.wan
 
