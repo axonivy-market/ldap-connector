@@ -1,64 +1,65 @@
-# Tätiger Telefonbuch Anschluss
+# Active Directory Connector
 
-**Tätiges Telefonbuch (INSERAT)** entfaltet eine Telefonbuch Bedienung bei
-#Microsoft für Fenster Domäne Netzwerke, #welche versehen zentralisiertes
-Management und Authentifizierung von Nutzer, Computer, und anderen Ressourcen
-innerhalb das Netzwerk. Es benutzt das **Leichtgewichtigen Telefonbuch Zugang
-Protokoll (LDAP)** da seinem zugrundeliegenden Protokoll zu #abfragen und
-fertigbringen Telefonbuch Auskunft. LDAP Ist das tarifliche Protokoll jenes
-INSERAT beschäftigt zu beglaubigen und autorisieren Nutzer und Ressourcen
-innerhalb ein Netzwerk.
+**Active Directory (AD)** ist ein von Microsoft für Windows-Domänennetzwerke
+entwickelter Verzeichnisdienst, der eine zentralisierte Verwaltung und
+Authentifizierung von Benutzern, Computern und anderen Ressourcen innerhalb des
+Netzwerks ermöglicht. Er verwendet das **Lightweight Directory Access Protocol
+(LDAP)** als zugrunde liegendes Protokoll, um Verzeichnisinformationen
+abzufragen und zu verwalten. LDAP ist das Standardprotokoll, das AD zur
+Authentifizierung und Autorisierung von Benutzern und Ressourcen innerhalb eines
+Netzwerks verwendet.
 
-#Axon Efeus **Tätiges Telefonbuch** Anschluss hilft du beschleunigst Arbeitsgang
-Automatisierung Initiativen #abfragen mal und schreibend Tätige Telefonbuch
-Objekte in eurem dienstlichen Arbeitsgang. Dieser Anschluss:
+Der Active Directory-** -Konnektor „ **” von Axon Ivy hilft Ihnen dabei,
+Initiativen zur Prozessautomatisierung zu beschleunigen, indem er Active
+Directory-Objekte in Ihrem Geschäftsprozess abfragt und schreibt. Dieser
+Konnektor:
 
-- Erlaubt du zu sicher #abfragen eure Tätiges Telefonbuch Einträge
-- Gibt du die Möglichkeit zu modifizieren Attribute von Tätig Telefonbuch
-  Objekte
-- Aktiviert die Kreation und Zusatz von neu Tätige Telefonbuch Einträge
-- Lässt du streichst Tätige Telefonbuch Objekte
-- Unterstützt du mit eine Demo Ausführung zu heruntersetzen eure Integration
-  Anstrengung.
+- Ermöglicht Ihnen die einfache Abfrage Ihrer Active Directory-Einträge.
+- Bietet Ihnen die Möglichkeit, Attribute von Active Directory-Objekten zu
+  ändern.
+- Ermöglicht die Erstellung und Hinzufügung neuer Active Directory-Einträge.
+- Ermöglicht das Löschen von Active Directory-Objekten
+- Unterstützt Sie mit einer Demo-Implementierung, um Ihren Integrationsaufwand
+  zu reduzieren.
 
 ## Demo
-### Anfrage Demo
-![Tätiger Telefonbuch Anschluss Demo 1](images/screen1.png "Tätiger Telefonbuch
-Anschluss Demo 1") ![Tätiger Telefonbuch Anschluss Demo 2](images/screen2.png
-"Tätiger Telefonbuch Anschluss Demo 2") ![Tätiger Telefonbuch Anschluss Demo
-3](images/screen3.png "Tätiger Telefonbuch Anschluss Demo 3")
+### Abfrage-Demo
+![Active Directory Connector Demo 1](images/screen1.png "Active Directory
+Connector Demo 1") ![Active Directory Connector Demo 2](images/screen2.png
+"Active Directory Connector Demo 2") ![Active Directory Connector Demo
+3](images/screen3.png "Active Directory Connector Demo 3")
 
-### Modifizier Demo
-![Tätiger Telefonbuch Anschluss Demo 4](images/screen4.png "Tätiger Telefonbuch
-Anschluss Demo 4") ![Tätiger Telefonbuch Anschluss Demo 5](images/screen5.png
-"Tätiger Telefonbuch Anschluss Demo 5")
+### Demo ändern
+![Active Directory Connector Demo 4](images/screen4.png "Active Directory
+Connector Demo 4") ![Active Directory Connector Demo 5](images/screen5.png
+"Active Directory Connector Demo 5")
 
 
 ## Einrichtung
 
-### #Aufstellen ein Tätiges Telefonbuch Instanz
-- Ob ein #existierend Tätiges Telefonbuch Instanz ist #nicht verfügbar, du
-  kannst aufstellen keine neue Instanz benutzend einen Hafenarbeiter Behälter.
-  Ein Sample Hafenarbeiter Fasst ab Datei ist versehen an dem folgenden Pfad:
-  `ldap-Anschluss-Demo/Hafenarbeiter/Hafenarbeiter-abfassen.yaml`. Diese
-  Einrichtung ist #vorhaben für Demonstration und testend Zwecke. Zu starten den
-  Behälter, versieh den admin Passwort config herein
-  `ldap-Anschluss-Demo/Hafenarbeiter/Hafenarbeiter-abfassen.yaml` Und
-  exekutieren den Befehl:
+### Einrichten einer Active Directory-Instanz
+- Wenn keine vorhandene Active Directory-Instanz verfügbar ist, können Sie
+  mithilfe eines Docker-Containers schnell eine neue Instanz einrichten. Eine
+  Beispiel-Docker-Compose-Datei finden Sie unter folgendem Pfad:
+  `ldap-connector-demo/docker/docker-compose.yaml`. Diese Einrichtung dient zu
+  Demonstrations- und Testzwecken. Um den Container zu starten, geben Sie das
+  Admin-Passwort in `ldap-connector-demo/docker/docker-compose.yaml` an und
+  führen Sie den folgenden Befehl aus:
 
 ```
 docker-compose up -d
 ```
 
-- Ob Hafenarbeiter ist nicht verfügbar in eurer lokalen Maschine, ein #online
-  LDAP Klausur Server kann sein nutzen da ein gelesen-einzige Instanz [Forumsys
-  #Online LDAP Klausur
-  Server](https://www.forumsys.com/2022/05/10/online-ldap-test-server/)
+- Wenn Docker auf Ihrem lokalen Rechner nicht verfügbar ist, kann ein
+  Online-LDAP-Testserver als schreibgeschützte Instanz verwendet werden
+  [Forumsys Online LDAP Test
+  Server](https://www.forumsys.com/2022/05/10/online-ldap-test-server/).
 
-**Verbessert Tätigen Telefonbuch Zusammenhang Variable** #Um zu benutzen dieses
-Produkt du musst mehrfache Variablen konfigurieren. Füg zu den folgenden Block
-zu eure `config/Variablen.yaml Datei` von unserem hauptsächlichen Geschäft
-Projekt will jener nützen von diesem Produkt:
+**Aktualisieren Sie die Active Directory-Verbindungsvariable „** “. Um dieses
+Produkt nutzen zu können, müssen Sie mehrere Variablen konfigurieren. Fügen Sie
+den folgenden Block zu Ihrer Datei „ `config/variables.yaml“ hinzu, die sich im
+Verzeichnis „` “ unseres Hauptgeschäftsprojekts befindet, das dieses Produkt
+nutzen wird:
 
 ```
 @variables.yaml@
