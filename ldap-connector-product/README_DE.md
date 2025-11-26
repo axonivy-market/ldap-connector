@@ -19,8 +19,7 @@ Konnektor:
   ändern.
 - Ermöglicht die Erstellung und Hinzufügung neuer Active Directory-Einträge.
 - Ermöglicht das Löschen von Active Directory-Objekten
-- Unterstützt Sie mit einer Demo-Implementierung, um Ihren Integrationsaufwand
-  zu reduzieren.
+- Bietet eine Demo Implementierung.
 
 ## Demo
 ### Abfrage-Demo
@@ -35,7 +34,7 @@ Connector Demo 4") ![Active Directory Connector Demo 5](images/screen5.png
 "Active Directory Connector Demo 5")
 
 
-## Einrichtung
+## Setup
 
 ### Einrichten einer Active Directory-Instanz
 - Wenn keine vorhandene Active Directory-Instanz verfügbar ist, können Sie
