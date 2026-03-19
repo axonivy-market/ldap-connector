@@ -20,6 +20,39 @@ Axon Ivy's **Active Directory** connector helps you accelerate process automatio
 ![Active Directory Connector Demo 4](images/screen4.png "Active Directory Connector Demo 4")
 ![Active Directory Connector Demo 5](images/screen5.png "Active Directory Connector Demo 5")
 
+## Security and Safe Usage
+
+This is a library component — it executes whatever LDAP filter your code builds. The connector does not expose raw user input directly to LDAP operations.
+
+**Risk:** LDAP injection can occur if your application concatenates untrusted input (form fields, URL parameters, etc.) into a filter string without escaping.
+
+**Impact:** Attackers could enumerate the directory, bypass authentication logic, or disclose sensitive attributes.
+
+### How to Stay Safe
+1. **Always escape user input** before putting it in a filter using `LdapFilterUtil.escapeLdapFilterValue()`.
+2. **Use allowlists** for known identifiers (e.g., validate username format).
+3. **Use minimal permissions** for the LDAP service account.
+
+### Example: Safe Filter Construction
+
+Use the built-in `LdapFilterUtil` class to escape any untrusted values:
+
+```java
+import com.axonivy.connector.ldap.util.LdapFilterUtil;
+
+// Escape user input
+String safeUid = LdapFilterUtil.escapeLdapFilterValue(userInput);
+String filter   = "(&(objectClass=person)(uid=" + safeUid + "))";
+
+// Build and execute the query
+LdapQuery query = LdapQuery.create()
+    .rootObject("dc=example,dc=com")
+    .filter(filter)
+    .toLdapQuery();
+```
+
+The utility escapes special LDAP characters (`\`, `*`, `(`, `)`, NUL) per RFC 4515.
+
 
 ## Setup
 
