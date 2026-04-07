@@ -2,15 +2,16 @@
 Variables:
   LdapConnector:
     # Ldap service provider
-    Provider: "com.sun.jndi.ldap.LdapCtxFactory"
+    Provider: com.sun.jndi.ldap.LdapCtxFactory
     # Url needed to contact the service provider, e.g. ldap://ldap.zug.ivy:389
     Url: ""
     # Username and password for contacting the service provider.
     Username: ""
-    # [password]
-    Password: ""
+    #[password]
+    Password: ${decrypt:}
     # Determines how referrals are handled by the service provider. Possible values are "follow", "ignore" or "throw".
-    Referral: "follow"
+    Referral: follow
     Connection:
       # Timeout for Ldap operations
       Timeout: "1000"
+    EscapeUserInput: "true"
