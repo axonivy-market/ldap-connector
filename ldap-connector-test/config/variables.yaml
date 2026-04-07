@@ -13,3 +13,4 @@ Variables:
     Referal: follow
     Connection:
       Timeout: "1000"
+    EscapeUserInput: "false"
