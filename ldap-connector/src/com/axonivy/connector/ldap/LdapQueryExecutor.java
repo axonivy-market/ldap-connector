@@ -11,17 +11,25 @@ import javax.naming.directory.SearchResult;
 
 import com.axonivy.connector.ldap.util.JndiConfig;
 import com.axonivy.connector.ldap.util.JndiUtil;
+import com.axonivy.connector.ldap.util.LdapFilterUtil;
+
+import ch.ivyteam.ivy.environment.Ivy;
 
 public class LdapQueryExecutor {
 
+  private static final String ESCAPE_USER_INPUT = "LdapConnector.EscapeUserInput";
   private JndiConfig jndiConfig;
+  private Boolean escapeUserInput;
 
   public LdapQueryExecutor() throws Exception {
     jndiConfig = JndiConfig.create().toJndiConfig();
+    escapeUserInput = Boolean.valueOf(Ivy.var().get(ESCAPE_USER_INPUT));
   }
 
   public LdapQueryExecutor(JndiConfig config) {
     this.jndiConfig = JndiConfig.create(config).toJndiConfig();
+    escapeUserInput = Boolean.valueOf(Ivy.var().get(ESCAPE_USER_INPUT));
+
   }
 
   public List<LdapObject> perform(LdapQuery ldapQuery)
@@ -31,7 +39,8 @@ public class LdapQueryExecutor {
     List<LdapObject> ldapObjectList;
     try {
       dirContext = JndiUtil.openDirContext(jndiConfig);
-      searchResults = dirContext.search(ldapQuery.getRootObject(), ldapQuery.getFilter(),
+      String filterQuery = escapeUserInput ? LdapFilterUtil.escapeLdapFilterValue(ldapQuery.getFilter()) : ldapQuery.getFilter();
+      searchResults = dirContext.search(ldapQuery.getRootObject(), filterQuery,
               ldapQuery.getSearchControl());
       ldapObjectList = searchResultsToLdapObjectList(searchResults);
     } finally {
