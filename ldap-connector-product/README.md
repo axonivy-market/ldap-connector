@@ -29,30 +29,9 @@ This is a library component — it executes whatever LDAP filter your code build
 **Impact:** Attackers could enumerate the directory, bypass authentication logic, or disclose sensitive attributes.
 
 ### How to Stay Safe
-1. **Always escape user input** before putting it in a filter using `LdapFilterUtil.escapeLdapFilterValue()`.
+1. **Always escape user input** before putting it in a filter using `LdapFilterUtil.escapeLdapFilterValue()` by set the variable `escapeUserInput` to `true` in the connector configuration. This prevents special characters from being interpreted as part of the LDAP query syntax.
 2. **Use allowlists** for known identifiers (e.g., validate username format).
 3. **Use minimal permissions** for the LDAP service account.
-
-### Example: Safe Filter Construction
-
-Use the built-in `LdapFilterUtil` class to escape any untrusted values:
-
-```java
-import com.axonivy.connector.ldap.util.LdapFilterUtil;
-
-// Escape user input
-String safeUid = LdapFilterUtil.escapeLdapFilterValue(userInput);
-String filter   = "(&(objectClass=person)(uid=" + safeUid + "))";
-
-// Build and execute the query
-LdapQuery query = LdapQuery.create()
-    .rootObject("dc=example,dc=com")
-    .filter(filter)
-    .toLdapQuery();
-```
-
-The utility escapes special LDAP characters (`\`, `*`, `(`, `)`, NUL) per RFC 4515.
-
 
 ## Setup
 
