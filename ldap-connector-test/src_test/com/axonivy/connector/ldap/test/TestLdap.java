@@ -37,6 +37,7 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 
+import ch.ivyteam.ivy.environment.AppFixture;
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.environment.IvyTest;
 
@@ -270,4 +271,16 @@ class TestLdap {
     writer.modifyAttributes(distinguishedName, DirContext.ADD_ATTRIBUTE, newAttribute);
   }
 
+  @Test
+  void filter_string_should_be_escapse (AppFixture appFixture) throws NamingException {
+    query = LdapQuery.create(query)
+      .rootObject(DOMAIN_COMPONENT)
+      .filter("(" + OBJECT_CLASS + "=*)")
+      .toLdapQuery();
+    List<LdapObject> queryResult = queryExecutor.perform(query);
+    assertThat(queryResult).hasSizeGreaterThanOrEqualTo(10);
+    appFixture.var("LdapConnector.EscapeUserInput", TRUE_VALUE);
+    queryResult = queryExecutor.perform(query);
+    assertThat(queryResult).hasSize(0);
+  }
 }
