@@ -280,6 +280,7 @@ class TestLdap {
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSizeGreaterThanOrEqualTo(10);
     appFixture.var("LdapConnector.EscapeUserInput", TRUE_VALUE);
+    queryExecutor = new LdapQueryExecutor(config);
     queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSize(0);
   }
