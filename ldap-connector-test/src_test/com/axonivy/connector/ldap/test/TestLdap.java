@@ -2,6 +2,7 @@ package com.axonivy.connector.ldap.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -13,6 +14,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.lang3.StringUtils;
@@ -280,8 +282,7 @@ class TestLdap {
     List<LdapObject> queryResult = queryExecutor.perform(query);
     assertThat(queryResult).hasSizeGreaterThanOrEqualTo(10);
     appFixture.var("LdapConnector.EscapeUserInput", TRUE_VALUE);
-    queryExecutor = new LdapQueryExecutor(config);
-    queryResult = queryExecutor.perform(query);
-    assertThat(queryResult).hasSize(0);
+    LdapQueryExecutor secureQueryExecutor = new LdapQueryExecutor(config);
+    assertThrows(InvalidSearchFilterException.class, () -> secureQueryExecutor.perform(query));
   }
 }
