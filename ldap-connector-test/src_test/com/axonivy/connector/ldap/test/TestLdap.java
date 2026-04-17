@@ -2,6 +2,7 @@ package com.axonivy.connector.ldap.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -13,6 +14,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +39,7 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 
+import ch.ivyteam.ivy.environment.AppFixture;
 import ch.ivyteam.ivy.environment.Ivy;
 import ch.ivyteam.ivy.environment.IvyTest;
 
@@ -270,4 +273,16 @@ class TestLdap {
     writer.modifyAttributes(distinguishedName, DirContext.ADD_ATTRIBUTE, newAttribute);
   }
 
+  @Test
+  void filter_string_should_be_escapse (AppFixture appFixture) throws NamingException {
+    query = LdapQuery.create(query)
+      .rootObject(DOMAIN_COMPONENT)
+      .filter("(" + OBJECT_CLASS + "=*)")
+      .toLdapQuery();
+    List<LdapObject> queryResult = queryExecutor.perform(query);
+    assertThat(queryResult).hasSizeGreaterThanOrEqualTo(10);
+    appFixture.var("LdapConnector.EscapeUserInput", TRUE_VALUE);
+    LdapQueryExecutor secureQueryExecutor = new LdapQueryExecutor(config);
+    assertThrows(InvalidSearchFilterException.class, () -> secureQueryExecutor.perform(query));
+  }
 }
