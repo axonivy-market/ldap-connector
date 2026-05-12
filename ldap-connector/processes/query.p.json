@@ -1,5 +1,5 @@
 {
-  "$schema" : "https://json-schema.axonivy.com/process/13.1.2/process.json",
+  "$schema" : "https://json-schema.axonivy.com/process/13.2.0/process.json",
   "id" : "17D5C3ADA54E7B5A",
   "kind" : "CALLABLE_SUB",
   "description" : "This LDAP connector allows you to query objects from a given directory via LDAP.",
@@ -35,7 +35,7 @@
       "visual" : {
         "at" : { "x" : 96, "y" : 64 },
         "labelOffset" : { "x" : 43, "y" : 37 },
-        "icon" : "res:/webContent/icons/ldap.png?small"
+        "icon" : "res:/webContent/icons/ldap.png"
       },
       "connect" : [
         { "id" : "f6", "to" : "f5" }
@@ -118,7 +118,7 @@
       "visual" : {
         "at" : { "x" : 96, "y" : 176 },
         "labelOffset" : { "x" : 76, "y" : 37 },
-        "icon" : "res:/webContent/icons/ldap.png?small"
+        "icon" : "res:/webContent/icons/ldap.png"
       },
       "connect" : [
         { "id" : "f8", "to" : "f3" }
