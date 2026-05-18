@@ -1,5 +1,5 @@
 {
-  "$schema" : "https://json-schema.axonivy.com/process/13.1.2/process.json",
+  "$schema" : "https://json-schema.axonivy.com/process/13.2.0/process.json",
   "id" : "17D75C0DFF198A83",
   "kind" : "CALLABLE_SUB",
   "description" : "This LDAP connector allows you to create, delete and modify objects in a specific directory via LDAP.",
@@ -30,7 +30,7 @@
       "visual" : {
         "at" : { "x" : 112, "y" : 104 },
         "labelOffset" : { "x" : 72, "y" : 37 },
-        "icon" : "res:/webContent/icons/ldap.png?small"
+        "icon" : "res:/webContent/icons/ldap.png"
       },
       "connect" : [
         { "id" : "f6", "to" : "f9" }
@@ -93,7 +93,7 @@
       "visual" : {
         "at" : { "x" : 112, "y" : 184 },
         "labelOffset" : { "x" : 38, "y" : 37 },
-        "icon" : "res:/webContent/icons/ldap.png?small"
+        "icon" : "res:/webContent/icons/ldap.png"
       },
       "connect" : [
         { "id" : "f4", "to" : "f9" }
@@ -143,7 +143,7 @@
       "visual" : {
         "at" : { "x" : 112, "y" : 264 },
         "labelOffset" : { "x" : 96, "y" : 37 },
-        "icon" : "res:/webContent/icons/ldap.png?small"
+        "icon" : "res:/webContent/icons/ldap.png"
       },
       "connect" : [
         { "id" : "f8", "to" : "f9" }
@@ -176,7 +176,7 @@
       "visual" : {
         "at" : { "x" : 112, "y" : 368 },
         "labelOffset" : { "x" : 128, "y" : 37 },
-        "icon" : "res:/webContent/icons/ldap.png?small"
+        "icon" : "res:/webContent/icons/ldap.png"
       },
       "connect" : [
         { "id" : "f12", "to" : "f3" }
