@@ -1,50 +1,32 @@
 {
-  "$schema" : "https://json-schema.axonivy.com/data-class/12.0.0/data-class.json",
+  "$schema" : "https://json-schema.axonivy.com/14.0-dev/project/data-class.json",
   "simpleName" : "queryData",
   "namespace" : "com.axonivy.connector.ldap.connector.demo.query",
-  "isBusinessCaseData" : false,
   "fields" : [ {
-    "name" : "provider",
-    "type" : "String",
-    "modifiers" : [ "PERSISTENT" ]
+    "name" : "provider"
   }, {
-    "name" : "url",
-    "type" : "String",
-    "modifiers" : [ "PERSISTENT" ]
+    "name" : "url"
   }, {
-    "name" : "user",
-    "type" : "String",
-    "modifiers" : [ "PERSISTENT" ]
+    "name" : "user"
   }, {
-    "name" : "password",
-    "type" : "String",
-    "modifiers" : [ "PERSISTENT" ]
+    "name" : "password"
   }, {
-    "name" : "rootObject",
-    "type" : "String",
-    "modifiers" : [ "PERSISTENT" ]
+    "name" : "rootObject"
   }, {
-    "name" : "filter",
-    "type" : "String",
-    "modifiers" : [ "PERSISTENT" ]
+    "name" : "filter"
   }, {
     "name" : "scope",
-    "type" : "Integer",
-    "modifiers" : [ "PERSISTENT" ]
+    "type" : "Integer"
   }, {
     "name" : "queryResult",
-    "type" : "java.util.List<com.axonivy.connector.ldap.LdapObject>"
+    "type" : "java.util.List<com.axonivy.connector.ldap.LdapObject>",
+    "modifiers" : [ ]
   }, {
     "name" : "returningAttributes",
-    "type" : "java.util.List<String>",
-    "modifiers" : [ "PERSISTENT" ]
+    "type" : "java.util.List<String>"
   }, {
-    "name" : "attributeName",
-    "type" : "String",
-    "modifiers" : [ "PERSISTENT" ]
+    "name" : "attributeName"
   }, {
-    "name" : "errorMessage",
-    "type" : "String",
-    "modifiers" : [ "PERSISTENT" ]
+    "name" : "errorMessage"
   } ]
 }
