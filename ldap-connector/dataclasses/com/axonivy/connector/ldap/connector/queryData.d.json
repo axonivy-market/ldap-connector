@@ -1,19 +1,22 @@
 {
-  "$schema" : "https://json-schema.axonivy.com/data-class/12.0.0/data-class.json",
+  "$schema" : "https://json-schema.axonivy.com/14.0-dev/project/data-class.json",
   "simpleName" : "queryData",
   "namespace" : "com.axonivy.connector.ldap.connector",
-  "isBusinessCaseData" : false,
   "fields" : [ {
     "name" : "jndiConfig",
-    "type" : "com.axonivy.connector.ldap.util.JndiConfig"
+    "type" : "com.axonivy.connector.ldap.util.JndiConfig",
+    "modifiers" : [ ]
   }, {
     "name" : "queryExecutor",
-    "type" : "com.axonivy.connector.ldap.LdapQueryExecutor"
+    "type" : "com.axonivy.connector.ldap.LdapQueryExecutor",
+    "modifiers" : [ ]
   }, {
     "name" : "ldapQuery",
-    "type" : "com.axonivy.connector.ldap.LdapQuery"
+    "type" : "com.axonivy.connector.ldap.LdapQuery",
+    "modifiers" : [ ]
   }, {
     "name" : "queryResult",
-    "type" : "java.util.List<com.axonivy.connector.ldap.LdapObject>"
+    "type" : "java.util.List<com.axonivy.connector.ldap.LdapObject>",
+    "modifiers" : [ ]
   } ]
 }
