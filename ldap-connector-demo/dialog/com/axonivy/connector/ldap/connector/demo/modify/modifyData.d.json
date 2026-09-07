@@ -1,0 +1,38 @@
+{
+  "$schema" : "https://json-schema.axonivy.com/14.0-dev/project/data-class.json",
+  "simpleName" : "modifyData",
+  "namespace" : "com.axonivy.connector.ldap.connector.demo.modify",
+  "fields" : [ {
+    "name" : "provider",
+    "modifiers" : [ ]
+  }, {
+    "name" : "url",
+    "modifiers" : [ ]
+  }, {
+    "name" : "user",
+    "modifiers" : [ ]
+  }, {
+    "name" : "password",
+    "modifiers" : [ ]
+  }, {
+    "name" : "distinguishedName",
+    "modifiers" : [ ]
+  }, {
+    "name" : "attributeName",
+    "modifiers" : [ ]
+  }, {
+    "name" : "attributeValue",
+    "modifiers" : [ ]
+  }, {
+    "name" : "queryResult",
+    "type" : "java.util.List<com.axonivy.connector.ldap.LdapObject>",
+    "modifiers" : [ ]
+  }, {
+    "name" : "errorMessage",
+    "modifiers" : [ ]
+  }, {
+    "name" : "dirContextAction",
+    "type" : "Integer",
+    "modifiers" : [ ]
+  } ]
+}

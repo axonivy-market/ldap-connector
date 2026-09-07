@@ -1,0 +1,42 @@
+{
+  "$schema" : "https://json-schema.axonivy.com/14.0-dev/project/data-class.json",
+  "simpleName" : "queryData",
+  "namespace" : "com.axonivy.connector.ldap.connector.demo.query",
+  "fields" : [ {
+    "name" : "provider",
+    "modifiers" : [ ]
+  }, {
+    "name" : "url",
+    "modifiers" : [ ]
+  }, {
+    "name" : "user",
+    "modifiers" : [ ]
+  }, {
+    "name" : "password",
+    "modifiers" : [ ]
+  }, {
+    "name" : "rootObject",
+    "modifiers" : [ ]
+  }, {
+    "name" : "filter",
+    "modifiers" : [ ]
+  }, {
+    "name" : "scope",
+    "type" : "Integer",
+    "modifiers" : [ ]
+  }, {
+    "name" : "queryResult",
+    "type" : "java.util.List<com.axonivy.connector.ldap.LdapObject>",
+    "modifiers" : [ ]
+  }, {
+    "name" : "returningAttributes",
+    "type" : "java.util.List<String>",
+    "modifiers" : [ ]
+  }, {
+    "name" : "attributeName",
+    "modifiers" : [ ]
+  }, {
+    "name" : "errorMessage",
+    "modifiers" : [ ]
+  } ]
+}
