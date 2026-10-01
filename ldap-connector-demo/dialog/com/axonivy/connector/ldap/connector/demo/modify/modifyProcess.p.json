@@ -1,5 +1,5 @@
 {
-  "$schema" : "https://json-schema.axonivy.com/14.0-dev/project/process-2.json",
+  "$schema" : "https://json-schema.axonivy.com/14.0/project/process.json",
   "id" : "17D93EE3606C95F6",
   "kind" : "HTML_DIALOG",
   "config" : {
@@ -81,8 +81,8 @@
       "config" : {
         "output" : {
           "code" : [
-            "import javax.faces.application.FacesMessage;",
-            "import javax.faces.context.FacesContext;",
+            "import jakarta.faces.application.FacesMessage;",
+            "import jakarta.faces.context.FacesContext;",
             "FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, \"LDAP Failure - \" + in.errorMessage, null));"
           ]
         }
