@@ -13,6 +13,6 @@ permissions:
 
 jobs:
   build:
-    uses: axonivy-market/github-workflows/.github/workflows/dev.yml@v6
+    uses: axonivy-market/github-workflows/.github/workflows/dev.yml@v14
     secrets:
       mvnArgs: -Dactivedirectory.username=${{ secrets.ACTIVE_DIRECTORY_USERNAME }} -Dactivedirectory.password=${{ secrets.ACTIVE_DIRECTORY_PASSWORD }}
