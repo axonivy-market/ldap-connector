@@ -1,0 +1,22 @@
+{
+  "$schema" : "https://json-schema.axonivy.com/14.0/project/data-class.json",
+  "simpleName" : "queryData",
+  "namespace" : "com.axonivy.connector.ldap.connector",
+  "fields" : [ {
+    "name" : "jndiConfig",
+    "type" : "com.axonivy.connector.ldap.util.JndiConfig",
+    "modifiers" : [ ]
+  }, {
+    "name" : "queryExecutor",
+    "type" : "com.axonivy.connector.ldap.LdapQueryExecutor",
+    "modifiers" : [ ]
+  }, {
+    "name" : "ldapQuery",
+    "type" : "com.axonivy.connector.ldap.LdapQuery",
+    "modifiers" : [ ]
+  }, {
+    "name" : "queryResult",
+    "type" : "java.util.List<com.axonivy.connector.ldap.LdapObject>",
+    "modifiers" : [ ]
+  } ]
+}

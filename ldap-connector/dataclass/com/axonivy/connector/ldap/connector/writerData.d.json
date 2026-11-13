@@ -1,0 +1,21 @@
+{
+  "$schema" : "https://json-schema.axonivy.com/14.0/project/data-class.json",
+  "simpleName" : "writerData",
+  "namespace" : "com.axonivy.connector.ldap.connector",
+  "fields" : [ {
+    "name" : "jndiConfig",
+    "type" : "com.axonivy.connector.ldap.util.JndiConfig",
+    "modifiers" : [ ]
+  }, {
+    "name" : "distinguishedName"
+  }, {
+    "name" : "attributes",
+    "type" : "javax.naming.directory.Attributes",
+    "modifiers" : [ ]
+  }, {
+    "name" : "action"
+  }, {
+    "name" : "dirContextAction",
+    "type" : "Integer"
+  } ]
+}
